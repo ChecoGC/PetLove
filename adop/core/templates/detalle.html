@@ -1,0 +1,19 @@
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="row no-gutters">
+            <div class="col-md-5">
+                <img src="{{ mascota.foto.url }}" class="img-fluid rounded-start" alt="{{ mascota.nombre }}">
+            </div>
+            <div class="col-md-7">
+                <div class="card-body">
+                    <h3 class="card-title">{{ mascota.nombre }}</h3>
+                    <p><strong>Raza:</strong> {{ mascota.raza }}</p>
+                    <p><strong>Edad:</strong> {{ mascota.edad }} años</p>
+                    <p><strong>Descripción:</strong> {{ mascota.descripcion }}</p>
+                    <a href="/" class="btn btn-secondary mt-3">Volver</a>
+                    <a href="#" class="btn btn-success mt-3">Adoptar ahora</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
