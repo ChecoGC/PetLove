@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Adopta tu mascota</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        /* Contenedor principal centrado y con separación */
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Imágenes del mismo tamaño */
+        .pet-img {
+            width: 100%;
+            height: 200px; /* Ajusta según prefieras */
+            object-fit: cover;
+            border-top-left-radius: 0.25rem;
+            border-top-right-radius: 0.25rem;
+        }
+
+        /* Todas las tarjetas de la misma altura */
+        .card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-body {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Botón que se mantiene alineado al final */
+        .card-body .btn {
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-5">🐾 BIENVENIDO, ADOPTA TU MASCOTA 🐾</h1>
+
+        <div class="row">
+            {% for item in mascotas %}
+            <div class="col-6 col-sm-4 col-md-3 mb-4 d-flex">
+                <div class="card text-center border-info shadow-sm flex-fill">
+                    <img class="card-img-top pet-img" src="{{ item.foto.url }}" alt="{{ item.nombre }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ item.nombre }}</h5>
+                        <p class="card-text">{{ item.descripcion }}</p>
+                        <a href="#" class="btn btn-primary">Adóptame</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
