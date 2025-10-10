@@ -1,0 +1,223 @@
+<div class="container my-5">
+   <div class="text-center mb-4">
+        <h2 class="text-info mt-3">Formulario de Adopción para {{ mascota.nombre }}</h2>
+        <img src="{{ mascota.foto.url }}" 
+             alt="{{ mascota.nombre }}" 
+             class="pet-img shadow rounded"
+             style="max-width: 250px; height: auto; border-radius: 12px;">
+        
+    </div>
+
+  <form method="post" class="border p-4 rounded shadow-sm bg-light">
+    {% csrf_token %}
+
+    <h4 class="text-primary mb-3">Datos Personales</h4>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Nombre y Apellido</label>
+        <input type="text" name="nombre_apellido" class="form-control" required>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Ocupación</label>
+        <input type="text" name="ocupacion" class="form-control" required>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label class="form-label">Edad</label>
+        <input type="number" name="edad" class="form-control" min="18" required>
+      </div>
+      <div class="col-md-4 mb-3">
+        <label class="form-label">Teléfono</label>
+        <input type="tel" name="telefono" class="form-control" required>
+      </div>
+      <div class="col-md-4 mb-3">
+        <label class="form-label">Correo electrónico (opcional)</label>
+        <input type="email" name="email" class="form-control">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Facebook (opcional)</label>
+        <input type="text" name="facebook" class="form-control">
+      </div>
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Instagram (opcional)</label>
+        <input type="text" name="instagram" class="form-control">
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Dirección</label>
+      <input type="text" name="direccion" class="form-control" required>
+    </div>
+
+    <h4 class="text-primary mb-3 mt-4">Motivación</h4>
+
+    <div class="mb-3">
+      <label class="form-label">¿Qué te motiva a adoptar?</label>
+      <textarea name="motivo_general" class="form-control" rows="2" required></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">¿Qué te motiva a adoptar a {{ mascota.nombre }} en especial?</label>
+      <textarea name="motivo_especifico" class="form-control" rows="2" required></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">¿Por qué consideras que eres la persona ideal para adoptar?</label>
+      <textarea name="persona_ideal" class="form-control" rows="2" required></textarea>
+    </div>
+
+    <h4 class="text-primary mb-3 mt-4">Experiencia con Animales</h4>
+
+    <div class="mb-3">
+      <label class="form-label">¿Tienes otros animales en casa? ¿Cuáles?</label>
+      <textarea name="animales_actuales" class="form-control" rows="2"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">¿Has tenido otros animales anteriormente? ¿Cuáles?</label>
+      <textarea name="animales_anteriores" class="form-control" rows="2"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">¿Qué pasó con ellos?</label>
+      <textarea name="que_paso" class="form-control" rows="2"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">¿Todos los integrantes de la casa están de acuerdo en adoptar?</label>
+      <select name="familia_de_acuerdo" class="form-select" required>
+        <option value="">Selecciona...</option>
+        <option>Sí</option>
+        <option>No</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">¿Hay niños en la casa?</label>
+      <select name="hay_ninios" class="form-select" required>
+        <option value="">Selecciona...</option>
+        <option>Sí</option>
+        <option>No</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">¿Qué edades tienen?</label>
+      <input type="text" name="edades_ninios" class="form-control">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">¿Ellos han convivido con animales anteriormente?</label>
+      <select name="ninios_convivencia" class="form-select">
+        <option value="">Selecciona...</option>
+        <option>Sí</option>
+        <option>No</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">¿Alguien de tu familia tiene alergias? ¿Cuáles?</label>
+      <input type="text" name="alergias" class="form-control">
+    </div>
+
+    <h4 class="text-primary mb-3 mt-4">Sobre tu Hogar</h4>
+
+    <div class="mb-3">
+      <label class="form-label">¿Vives en casa o departamento propio o rentado?</label>
+      <input type="text" name="tipo_vivienda" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Si es rentado, ¿se permiten animales?</label>
+      <select name="se_permiten_animales" class="form-select">
+        <option value="">Selecciona...</option>
+        <option>Sí</option>
+        <option>No</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">¿Hay suficiente espacio para que esté cómodo?</label>
+      <select name="espacio_suficiente" class="form-select" required>
+        <option value="">Selecciona...</option>
+        <option>Sí</option>
+        <option>No</option>
+      </select>
+    </div>
+
+    <h4 class="text-primary mb-3 mt-4">Situaciones Especiales</h4>
+
+    <div class="mb-3">
+      <label class="form-label">¿Qué pasaría con el adoptado si tuvieras que mudarte?</label>
+      <textarea name="mudanza" class="form-control" rows="2"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">¿Qué pasaría si el adoptado se enferma?</label>
+      <textarea name="enfermedad" class="form-control" rows="2"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">¿Tienes un veterinario de cabecera?</label>
+      <input type="text" name="veterinario" class="form-control">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">¿Dónde dormirá el adoptado?</label>
+      <input type="text" name="donde_duerme" class="form-control">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">¿Cuánto tiempo pasará solo al día?</label>
+      <input type="text" name="tiempo_solo" class="form-control">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">¿Cuántas veces por semana estás dispuesto a pasearlo y por cuánto tiempo?</label>
+      <input type="text" name="paseos" class="form-control">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">¿Quién será responsable de cubrir los gastos del adoptado?</label>
+      <input type="text" name="responsable_gastos" class="form-control" required>
+    </div>
+
+    <h4 class="text-primary mb-3 mt-4">Cuidados y Compromiso</h4>
+
+    <div class="mb-3">
+      <label class="form-label">¿Estás dispuesto a darle los siguientes cuidados?</label>
+      <ul>
+        <li>Visitas periódicas al veterinario</li>
+        <li>Paseo con correa</li>
+        <li>Plato de agua limpia diario</li>
+        <li>Vacunación y desparasitación</li>
+        <li>Tiempo de juego y afecto</li>
+      </ul>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">En caso de que quieras agregar algo más</label>
+      <textarea name="comentarios_extras" class="form-control" rows="3"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-success w-100 mt-4">
+      Enviar solicitud
+    </button>
+  </form>
+</div>
+
+<style>
+  form h4 {
+    border-bottom: 2px solid #0dcaf0;
+    padding-bottom: 5px;
+  }
+  textarea, input, select {
+    border-radius: 8px !important;
+  }
+</style>

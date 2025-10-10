@@ -12,3 +12,7 @@ def index(request):
 def detalle_mascota(request, id):
     mascota = get_object_or_404(Mascota, id=id)
     return render(request, 'detalle.html', {'mascota': mascota})
+
+def formulario_adopcion(request, mascota_id):
+    mascota = Mascota.objects.get(id=mascota_id)
+    return render(request, "formulario_adopcion.html", {"mascota": mascota})
