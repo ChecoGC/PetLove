@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Mascota
+from .models import Mascota, SolicitudAdopcion
 
+from rest_framework import viewsets
+from .serializers import MascotaSerializer, SolicitudAdopcionSerializer
 
 #Vista basada en una funcion
 def index(request):
@@ -13,6 +15,14 @@ def detalle_mascota(request, id):
     mascota = get_object_or_404(Mascota, id=id)
     return render(request, 'detalle.html', {'mascota': mascota})
 
+class MascotaViewSet(viewsets.ModelViewSet):
+    queryset = Mascota.objects.all()
+    serializer_class = MascotaSerializer
+
 def formulario_adopcion(request, mascota_id):
     mascota = Mascota.objects.get(id=mascota_id)
     return render(request, "formulario_adopcion.html", {"mascota": mascota})
+
+class SolicitudAdopcionViewSet(viewsets.ModelViewSet):
+    queryset = SolicitudAdopcion.objects.all()
+    serializer_class = SolicitudAdopcionSerializer
