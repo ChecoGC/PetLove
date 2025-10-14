@@ -1,6 +1,70 @@
 from django.db import models
 from django.utils import timezone
 
+
+
+
+from django.db import models
+
+class Mascota(models.Model):
+    STATUS_CHOICES = [
+        ('disponible', 'Disponible'),
+        ('adoptado', 'Adoptado'),
+        ('en_proceso', 'En proceso de adopción'),
+    ]
+
+    GENERO_CHOICES = [
+        ('macho', 'Macho'),
+        ('hembra', 'Hembra'),
+        ('desconocido', 'Desconocido'),
+    ]
+
+    TIPO_CHOICES = [
+        ('perro', 'Perro'),
+        ('gato', 'Gato'),
+        ('otro', 'Otro'),
+    ]
+
+    nombre = models.CharField(max_length=100)
+    raza = models.CharField(max_length=100, blank=True, null=True)
+    edad = models.PositiveIntegerField(
+        help_text="Edad aproximada en años",
+        default=0
+    )
+    tipo = models.CharField(
+        max_length=30,
+        choices=TIPO_CHOICES,
+        default='otro'
+    )
+    genero = models.CharField(
+        max_length=20,
+        choices=GENERO_CHOICES,
+        default='desconocido'
+    )
+    descripcion = models.TextField(blank=True)
+    foto = models.ImageField(upload_to='mascotas/', blank=True, null=True)
+    status = models.CharField(
+        max_length=30,
+        choices=STATUS_CHOICES,
+        default='disponible'
+    )
+
+    fecha_registro = models.DateTimeField(auto_now_add=True)
+    vacunado = models.BooleanField(default=False)
+    esterilizado = models.BooleanField(default=False)
+    raza = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.nombre} ({self.tipo}) - {self.status}"
+
+""" EL modelo Mascota esta muy escueto, agregar:
+    status
+    raza
+    edad
+    tipo de animal(perro, gato, etc)
+    genero
+    agrega otros si crees que son necesarios
+
 class Mascota(models.Model):
     nombre = models.CharField(max_length=100)
     foto = models.ImageField(upload_to="mascotas",null=True, blank=True)
@@ -8,6 +72,8 @@ class Mascota(models.Model):
 
     def __str__(self):
         return self.nombre
+    """
+    
 
 class SolicitudAdopcion(models.Model):
     # relacionn con la mascota adoptada
