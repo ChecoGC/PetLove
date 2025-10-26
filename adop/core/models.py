@@ -1,9 +1,5 @@
 from django.db import models
 from django.utils import timezone
-
-
-
-
 from django.db import models
 
 class Mascota(models.Model):
@@ -57,22 +53,6 @@ class Mascota(models.Model):
     def __str__(self):
         return f"{self.nombre} ({self.tipo}) - {self.status}"
 
-""" EL modelo Mascota esta muy escueto, agregar:
-    status
-    raza
-    edad
-    tipo de animal(perro, gato, etc)
-    genero
-    agrega otros si crees que son necesarios
-
-class Mascota(models.Model):
-    nombre = models.CharField(max_length=100)
-    foto = models.ImageField(upload_to="mascotas",null=True, blank=True)
-    descripcion = models.TextField()
-
-    def __str__(self):
-        return self.nombre
-    """
     
 
 class SolicitudAdopcion(models.Model):
@@ -116,3 +96,12 @@ class SolicitudAdopcion(models.Model):
 
     def __str__(self):
         return f"Solicitud de {self.nombre_apellido} para {self.mascota.nombre}"
+
+class Contacto(models.Model):
+    nombre_apellido  = models.CharField(max_length=100)
+    telefono = models.CharField(max_length=12)
+    email = models.EmailField()
+    mensaje = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.nombre_apellido
