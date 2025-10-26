@@ -60,38 +60,50 @@ class SolicitudAdopcion(models.Model):
     mascota = models.ForeignKey('Mascota', on_delete=models.CASCADE)
 
     # Datos personales
-    nombre_apellido = models.CharField(max_length=100)
-    ocupacion = models.CharField(max_length=100)
-    edad = models.PositiveIntegerField()
-    correo = models.EmailField(blank=True, null=True)
-    telefono = models.CharField(max_length=20)
-    facebook = models.CharField(max_length=100, blank=True, null=True)
-    instagram = models.CharField(max_length=100, blank=True, null=True)
-    direccion = models.CharField(max_length=200)
+    nombre_apellido = models.CharField(max_length=100) #
+    ocupacion = models.CharField(max_length=100) #
+    edad = models.PositiveIntegerField() #
+    telefono = models.CharField(max_length=20) #
+    email = models.EmailField(blank=True, null=True) #
+    facebook = models.CharField(max_length=100, blank=True, null=True) #
+    instagram = models.CharField(max_length=100, blank=True, null=True) #
+    direccion = models.CharField(max_length=200) #
 
     # Motivaciones
-    motivo_general = models.TextField()
-    motivo_especifico = models.TextField()
+    motivo_general = models.TextField() #
+    motivo_especifico = models.TextField() #
+    persona_ideal = models.TextField() # 
 
     # Informacion adicional
-    otros_animales = models.TextField(blank=True, null=True)
-    historial_animales = models.TextField(blank=True, null=True)
-    acuerdo_familia = models.BooleanField(default=False)
-    hay_ninios = models.BooleanField(default=False)
-    edades_ninios = models.CharField(max_length=100, blank=True, null=True)
-    alergias = models.CharField(max_length=200, blank=True, null=True)
-    tipo_vivienda = models.CharField(max_length=50, blank=True, null=True)
-    se_permiten_animales = models.BooleanField(default=False)
-    espacio_suficiente = models.BooleanField(default=False)
-    que_pasa_si_muda = models.TextField(blank=True, null=True)
-    cambios_trato = models.TextField(blank=True, null=True)
-    situacion_empleo = models.CharField(max_length=100, blank=True, null=True)
-    responsable_gastos = models.CharField(max_length=100, blank=True, null=True)
+    otros_animales = models.TextField(blank=True, null=True) #
+    animales_anteriores = models.TextField(blank=True, null=True) #
+    que_paso = models.TextField(blank=True, null=True) #
+    familia_de_acuerdo = models.BooleanField(default=False) #
+    hay_ninios = models.BooleanField(default=False) #
+    edades_ninios = models.CharField(max_length=100, blank=True, null=True) #
+    ninios_convivencia = models.BooleanField(default=False)  #
+    alergias = models.CharField(max_length=200, blank=True, null=True) #
+    tipo_vivienda = models.CharField(max_length=50, blank=True, null=True) #
+    se_permiten_animales = models.BooleanField(default=False) #
+    espacio_suficiente = models.BooleanField(default=False) #
+    que_pasa_si_muda = models.TextField(blank=True, null=True) #
+    que_pasa_si_enferma = models.TextField(blank=True, null=True) #
+    tiene_veterinario = models.BooleanField(default=False) #
+    donde_duerme = models.TextField(blank=True, null=True) #
+    tiempo_solo_dia = models.TextField(blank=True, null = True) #
+    paseos = models.TextField(blank=True, null = True) #
+    responsable_gastos = models.CharField(max_length=100, blank=True, null=True) #
+    situacion_empleo = models.CharField(max_length=100, blank=True, null=True)#
     puede_cubrir_gastos = models.BooleanField(default=False)
-    cuidados = models.TextField(blank=True, null=True)
-    veterinario = models.CharField(max_length=100, blank=True, null=True)
-    comentarios_extra = models.TextField(blank=True, null=True)
 
+    #Cuidados y Compromiso 
+    veterinario = models.BooleanField(default=False) #
+    paseo = models.BooleanField(default=False) #
+    plato_limpio = models.BooleanField(default=False) #
+    vacunacion_desparasitacion = models.BooleanField(default=False) #
+    Tiempo_juego_afecto = models.BooleanField(default=False) #
+
+    comentarios_extra = models.TextField(blank=True, null=True) #
     fecha_solicitud = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -102,6 +114,6 @@ class Contacto(models.Model):
     telefono = models.CharField(max_length=12)
     email = models.EmailField()
     mensaje = models.TextField(blank=True, null=True)
-
+    fecha_mensaje = models.DateTimeField(default=timezone.now)    
     def __str__(self):
-        return self.nombre_apellido
+        return f"mensaje de {self.nombre_apellido} del {self.fecha_mensaje}" 

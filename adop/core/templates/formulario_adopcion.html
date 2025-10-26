@@ -6,7 +6,7 @@
 
 <div class="container my-5">
    <div class="text-center mb-4">
-        <h2 class="text-info mt-3">Formulario de Adopción para {{ mascota.nombre }}</h2>
+        <h2 class="text-info mt-3">Formulario de adopción para {{ mascota.nombre }}</h2>
         <img src="{{ mascota.foto.url }}" 
              alt="{{ mascota.nombre }}" 
              class="pet-img shadow rounded"
@@ -14,7 +14,7 @@
         
     </div>
 
-  <form method="post" class="border p-4 rounded shadow-sm bg-light">
+  <form id="adopcionForm" class="border p-4 rounded shadow-sm bg-light">
     {% csrf_token %}
 
     <h4 class="text-primary mb-3">Datos Personales</h4>
@@ -161,17 +161,21 @@
 
     <div class="mb-3">
       <label class="form-label">¿Qué pasaría con el adoptado si tuvieras que mudarte?</label>
-      <textarea name="mudanza" class="form-control" rows="2"></textarea>
+      <textarea name="que_pasa_si_muda" class="form-control" rows="2"></textarea>
     </div>
 
     <div class="mb-3">
       <label class="form-label">¿Qué pasaría si el adoptado se enferma?</label>
-      <textarea name="enfermedad" class="form-control" rows="2"></textarea>
+      <textarea name="que_pasa_si_enferma" class="form-control" rows="2"></textarea>
     </div>
 
     <div class="mb-3">
       <label class="form-label">¿Tienes un veterinario de cabecera?</label>
-      <input type="text" name="veterinario" class="form-control">
+      <select name="tiene_veterinario" class="form-select" required>
+        <option value="">Selecciona...</option>
+        <option>Sí</option>
+        <option>No</option>
+      </select>
     </div>
 
     <div class="mb-3">
@@ -181,7 +185,7 @@
 
     <div class="mb-3">
       <label class="form-label">¿Cuánto tiempo pasará solo al día?</label>
-      <input type="text" name="tiempo_solo" class="form-control">
+      <input type="text" name="tiempo_solo_dia" class="form-control">
     </div>
 
     <div class="mb-3">
@@ -193,22 +197,65 @@
       <label class="form-label">¿Quién será responsable de cubrir los gastos del adoptado?</label>
       <input type="text" name="responsable_gastos" class="form-control" required>
     </div>
+    <div class="mb-3">
+      <label class="form-label">¿Cuál es tu situación actual de empleo?</label>
+      <input type="text" name="situacion_empleo" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">¿Actualmente puedes/podrias cubrir los gastos de cuidado?</label>
+      <input type="text" name="puede_cubrir_gastos" class="form-control" required>
+    </div>
+    
 
     <h4 class="text-primary mb-3 mt-4">Cuidados y Compromiso</h4>
 
     <div class="mb-3">
       <label class="form-label">¿Estás dispuesto a darle los siguientes cuidados?</label>
-      <ul>
-        <li>Visitas periódicas al veterinario</li>
-        <li>Paseo con correa</li>
-        <li>Plato de agua limpia diario</li>
-        <li>Vacunación y desparasitación</li>
-        <li>Tiempo de juego y afecto</li>
-      </ul>
+
+      <div class="mb-3">
+        <label class="form-label">Visitas periódicas al veterinario</label>
+        <select name="veterinario" class="form-select" required>
+          <option value="">Selecciona...</option>
+          <option>Sí</option>
+          <option>No</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Paseo con correa</label>
+        <select name="paseo" class="form-select" required>
+          <option value="">Selecciona...</option>
+          <option>Sí</option>
+          <option>No</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Plato de agua limpia diario</label>
+        <select name="plato_limpio" class="form-select" required>
+          <option value="">Selecciona...</option>
+          <option>Sí</option>
+          <option>No</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Vacunación y desparasitacion</label>
+        <select name="vacunacion_desparasitacion" class="form-select" required>
+          <option value="">Selecciona...</option>
+          <option>Sí</option>
+          <option>No</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Tiempo de juego y afecto</label>
+        <select name="Tiempo_juego_afecto" class="form-select" required>
+          <option value="">Selecciona...</option>
+          <option>Sí</option>
+          <option>No</option>
+        </select>
+      </div>
     </div>
 
     <div class="mb-3">
-      <label class="form-label">En caso de que quieras agregar algo más</label>
+      <label class="form-label">En caso de que quieras agregar algo más, dejanos un comentario</label>
       <textarea name="comentarios_extras" class="form-control" rows="3"></textarea>
     </div>
 
@@ -216,7 +263,86 @@
       Enviar solicitud
     </button>
   </form>
+  <p id="resultado" class="text-center mt-3"></p>
+
 </div>
+
+<script>
+const form = document.getElementById("adopcionForm");
+const resultado = document.getElementById("resultado");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const data = {
+    nombre_apellido: form.nombre_apellido.value,
+    ocupacion: form.ocupacion.value,
+    edad: form.edad.value,
+    telefono: form.telefono.value,
+    email: form.email.value,
+    facebook: form.facebook.value,
+    instagram: form.instagram.value,
+    direccion: form.direccion.value,
+    motivo_general: form.motivo_general.value,
+    motivo_especifico: form.motivo_especifico.value,
+    persona_ideal: form.persona_ideal.value,
+    otros_animales: form.animales_actuales.value,
+    animales_anteriores: form.animales_anteriores.value,
+    que_paso: form.que_paso.value,
+    familia_de_acuerdo: form.familia_de_acuerdo.value === "Sí",
+    hay_ninios: form.hay_ninios.value === "Sí",
+    edades_ninios: form.edades_ninios.value,
+    alergias: form.alergias.value,
+    tipo_vivienda: form.tipo_vivienda.value,
+    se_permiten_animales: form.se_permiten_animales.value === "Sí",
+    espacio_suficiente: form.espacio_suficiente.value === "Sí",
+    que_pasa_si_muda: form.que_pasa_si_muda.value,
+    que_pasa_si_enferma: form.que_pasa_si_enferma.value,
+    tiene_veterinario: form.espacio_suficiente.value === "Sí",
+    donde_duerme: form.donde_duerme.value, 
+    tiempo_solo_dia: form.tiempo_solo_dia.value,
+    paseos: form.paseos.value,
+    responsable_gastos: form.responsable_gastos.value,
+    situacion_empleo: form.situacion_empleo.value,
+    puede_cubrir_gastos: form.puede_cubrir_gastos.value === "Sí",
+
+    veterinario: form.veterinario.value === "Sí",
+    paseo: form.paseo.value === "Sí",
+    plato_limpio: form.plato_limpio.value === "Sí",
+    vacunacion_desparasitacion: form.vacunacion_desparasitacion.value === "Sí",
+    tiempo_juego_afecto: form.Tiempo_juego_afecto.value === "Sí",
+    comentarios_extra: form.comentarios_extras.value,
+    mascota: "{{ mascota.id }}"
+  };
+
+  try {
+    const response = await fetch("/api/formularios/", {  
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+      },
+      body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+    console.log(result); // ver detalle en consola
+
+    if (response.status === 201 || response.status === 200) {
+      resultado.textContent = "Solicitud enviada correctamente";
+      resultado.style.color = "green";
+      form.reset();
+    } else {
+      resultado.textContent = "Error al enviar: " + JSON.stringify(result);
+      resultado.style.color = "red";
+    }
+  } catch (error) {
+    console.error("Error de conexión:", error);
+    resultado.textContent = "Error de conexión";
+    resultado.style.color = "red";
+  }
+});
+</script>
 
 <style>
   form h4 {
