@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Mascota, SolicitudAdopcion, Contacto
+from .models import Mascota, SolicitudAdopcion, Mensaje
 
 from rest_framework import viewsets
-from .serializers import MascotaSerializer, SolicitudAdopcionSerializer, ContactoSerializer
+from .serializers import MascotaSerializer, SolicitudAdopcionSerializer, MensajeSerializer
 
 #Vista basada en una funcion
 def index(request):
@@ -27,9 +27,9 @@ class SolicitudAdopcionViewSet(viewsets.ModelViewSet):
     queryset = SolicitudAdopcion.objects.all()
     serializer_class = SolicitudAdopcionSerializer
 
-class ContactoViewSet(viewsets.ModelViewSet):
-    queryset = Contacto.objects.all()
-    serializer_class = ContactoSerializer
-def contacto(request):
+class MensajeViewSet(viewsets.ModelViewSet):
+    queryset = Mensaje.objects.all()
+    serializer_class = MensajeSerializer
+def mensaje(request):
     template_name = 'contacto.html'
     return render (request, template_name)

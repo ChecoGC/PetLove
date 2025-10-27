@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Mascota, SolicitudAdopcion, Contacto
+from .models import Mascota, SolicitudAdopcion, Mensaje
 
 class MascotaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,7 +11,7 @@ class SolicitudAdopcionSerializer(serializers.ModelSerializer):
         model = SolicitudAdopcion
         fields = '__all__'
 
-class ContactoSerializer(serializers.ModelSerializer):
+class MensajeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Contacto
+        model = Mensaje
         fields = '__all__'

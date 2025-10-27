@@ -109,7 +109,7 @@ class SolicitudAdopcion(models.Model):
     def __str__(self):
         return f"Solicitud de {self.nombre_apellido} para {self.mascota.nombre}"
 
-class Contacto(models.Model):
+class Mensaje(models.Model):
     nombre_apellido  = models.CharField(max_length=100)
     telefono = models.CharField(max_length=12)
     email = models.EmailField()
