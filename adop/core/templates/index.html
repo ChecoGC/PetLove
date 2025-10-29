@@ -4,6 +4,11 @@
 
 {% block content %}
 
+    
+
+   
+
+
 <!-- quiero poder filtar entre, perros, gatos y otros-->
 <!DOCTYPE html>
 <html lang="es">
@@ -57,24 +62,9 @@
 <body>
     <div class="container mt-5">
         <h1 class="text-center mb-5">BIENVENIDO, ADOPTA TU MASCOTA</h1>
-
-        <div class="row">
-            {% for item in mascotas %}
-            <div class="col-6 col-sm-4 col-md-3 mb-4 d-flex">
-                <div class="card text-center border-info shadow-sm flex-fill">
-                    <img class="card-img-top pet-img" src="{{ item.foto.url }}" alt="{{ item.nombre }}">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ item.nombre }}</h5>
-                        <p class="card-text">{{ item.descripcion }}</p>
-<!--                        <a href="#" class="btn btn-primary">Adoptame</a> -->
-                        <a href="{% url 'detalle_mascota' item.id %}" class="btn btn-primary">Mas informacion</a>
-
-                        
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
+         <div id="mascotas-listado">
+            {% include 'mascota_list.html' %} 
+         </div>
     </div>
 </body>
 </html>

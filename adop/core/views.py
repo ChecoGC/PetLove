@@ -33,3 +33,13 @@ class MensajeViewSet(viewsets.ModelViewSet):
 def mensaje(request):
     template_name = 'contacto.html'
     return render (request, template_name)
+
+def filtrar_mascotas_view(request):
+    especie = request.GET.get('especie', '')
+
+    if especie:
+        mascotas = Mascota.objects.filter(tipo__iexact=especie)
+    else:
+        mascotas = Mascota.objects.all()
+    context = {'mascotas': mascotas}
+    return render(request, 'mascota_list.html', context)

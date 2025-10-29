@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
-
     <style>
         body {
             background-color: #f8f9fa;
@@ -119,12 +118,29 @@
             <!-- Barra lateral izquierda -->
             <aside class="col-md-2 sidebar-left">
                 {% block sidebar_left %}
+                    <h5>Filtrar Especie</h5>
+                    <div class="list-group">
+                        <button class="list-group-item list-group-item-action filter-btn" data-especie="perro">
+                            Perros
+                        </button>
+                        <button class="list-group-item list-group-item-action filter-btn" data-especie="gato">
+                            Gatos
+                        </button>
+                        <button class="list-group-item list-group-item-action filter-btn" data-especie="">
+                            Mostrar Todos
+                        </button>
+                    </div>
                 {% endblock %}
             </aside>
 
             <!-- Contenido central -->
             <main class="col-md-8 content">
-                {% block content %}{% endblock %}
+                {% block content %}
+                    <h2>Mascotas en Adopción</h2>
+                    <div id="mascotas-listado">
+                        {% include 'mascota_list.html' %} 
+                    </div>
+                {% endblock %}
             </main>
 
             <!-- Barra lateral derecha -->
@@ -139,6 +155,29 @@
     <footer>
         <p></p>
     </footer>
+    <script>
+    $(document).ready(function() {
+        $('.filter-btn').on('click', function(e) {
+            e.preventDefault();
+            
+            var especie = $(this).data('especie');
+            var url = "{% url 'filtrar_mascotas' %}"; 
+            
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: {'especie': especie},
+                success: function(data) {
+                    $('#mascotas-listado').html(data); 
+                },
+                error: function(xhr, status, error) {
+                    
+                    console.error("Error al filtrar mascotas:", error);
+                }
+            });
+        });
+    });
+    </script>
 </body>
 
 </html>

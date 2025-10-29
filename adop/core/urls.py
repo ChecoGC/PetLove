@@ -16,4 +16,5 @@ urlpatterns = [
     path("adoptar/<int:mascota_id>/", views.formulario_adopcion, name="formulario_adopcion"),
     path('mensaje/', mensaje, name='mensaje'),
     path('', include(router.urls)),
+    path('filtrar/', views.filtrar_mascotas_view, name='filtrar_mascotas'),
 ]

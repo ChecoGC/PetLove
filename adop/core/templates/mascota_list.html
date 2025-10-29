@@ -1,0 +1,20 @@
+<div class="row">
+    {% for mascota in mascotas %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow">
+                <img src="{{ mascota.foto.url }}" class="card-img-top pet-img" alt="{{ mascota.nombre }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ mascota.nombre}}</h5>
+                    <p class="card-text">{{ mascota.descripcion|truncatechars:100 }}</p>
+                    
+                    <a href="{% url 'detalle_mascota' mascota.id %}" class="btn btn-primary">Ver Detalles</a>
+                    
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <p class="alert alert-warning">No se encontraron mascotas con el filtro aplicado.</p>
+        </div>
+    {% endfor %}
+</div>
