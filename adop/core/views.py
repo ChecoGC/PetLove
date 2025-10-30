@@ -68,12 +68,28 @@ def filtrar_mascotas_view(request):
 
 
 def obtener_filtros_ubicacion(request):
-    """Devuelve listas únicas de estados y municipios de los refugios."""
+    """
+    Devuelve listas únicas de estados y municipios de los refugios.
+    Si se recibe 'estado', solo devuelve los municipios de ese estado.
+    """
     
+    # 1. Obtener el parámetro 'estado' de la petición GET (si existe)
+    estado_seleccionado = request.GET.get('estado', None)
+
+    # 2. Obtener la lista completa de estados (siempre se necesita para el combo principal)
     estados_unicos = Refugio.objects.values_list('estado', flat=True).distinct().order_by('estado')
     
-    municipios_unicos = Refugio.objects.values_list('municipio', flat=True).distinct().order_by('municipio')
+    # 3. Definir el QuerySet base para municipios
+    municipios_qs = Refugio.objects
     
+    # 4. APLICAR EL FILTRO DE CASCADA: Si se seleccionó un estado, filtramos los municipios
+    if estado_seleccionado:
+        # Filtra los municipios solo para el estado seleccionado
+        municipios_unicos = municipios_qs.filter(estado=estado_seleccionado).values_list('municipio', flat=True).distinct().order_by('municipio')
+    else:
+        # Si no se seleccionó estado, devuelve todos los municipios (como se hacía antes)
+        municipios_unicos = municipios_qs.values_list('municipio', flat=True).distinct().order_by('municipio')
+        
     data = {
         'estados': list(estados_unicos),
         'municipios': list(municipios_unicos)

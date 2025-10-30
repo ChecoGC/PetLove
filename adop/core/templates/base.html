@@ -182,8 +182,42 @@
         
         var currentEspecie = ''; 
         
-        // Función para llenar los select de Estado y Municipio
-        function cargarFiltrosUbicacion() {
+        // Función para llenar SOLO los select de Municipios basado en el estado
+        function cargarMunicipios(estadoSeleccionado) {
+            var url = "{% url 'filtros_ubicacion_api' %}"; 
+            var municipioSelect = $('#filter-municipio');
+            
+            // 1. Limpiar opciones viejas, excepto la primera ("Todos...")
+            municipioSelect.find('option:gt(0)').remove();
+            
+            // 2. Si no hay estado seleccionado, no cargar nada y salir
+            if (!estadoSeleccionado) {
+                return;
+            }
+
+            // 3. Petición AJAX, enviando el estado como parámetro GET
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: { estado: estadoSeleccionado }, // <-- Enviar el estado seleccionado
+                success: function(data) {
+                    // Llenar Municipios
+                    data.municipios.forEach(function(municipio) {
+                        municipioSelect.append('<option value="' + municipio + '">' + municipio + '</option>');
+                    });
+                    
+                    // 4. Iniciar el filtro principal después de cargar los municipios (opcional, pero mejora la UX)
+                    realizarFiltro(obtenerParamsFiltro());
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error al cargar municipios:", error);
+                }
+            });
+        }
+
+
+        // Función inicial para llenar SOLO el select de Estados
+        function cargarFiltrosIniciales() {
             var url = "{% url 'filtros_ubicacion_api' %}"; 
 
             $.ajax({
@@ -191,26 +225,23 @@
                 type: 'GET',
                 success: function(data) {
                     var estadoSelect = $('#filter-estado');
-                    var municipioSelect = $('#filter-municipio');
                     
-                    // Llenar Estados
+                    // Llenar Estados (la primera opción es "Todos los Estados")
                     data.estados.forEach(function(estado) {
                         estadoSelect.append('<option value="' + estado + '">' + estado + '</option>');
                     });
-                    
-                    // Llenar Municipios
-                    data.municipios.forEach(function(municipio) {
-                        municipioSelect.append('<option value="' + municipio + '">' + municipio + '</option>');
-                    });
+
+                    // Cargar municipios sin filtro inicial (opcional: solo se cargan si el usuario selecciona un estado)
+                    // cargarMunicipios(''); 
                 },
                 error: function(xhr, status, error) {
-                    console.error("Error al cargar filtros de ubicación:", error);
+                    console.error("Error al cargar filtros iniciales:", error);
                 }
             });
         }
         
-        // Llamar la función al cargar la página para popular los combos
-        cargarFiltrosUbicacion();
+        // Llamar la función inicial al cargar la página
+        cargarFiltrosIniciales();
 
 
         // Función central que realiza la petición AJAX con todos los parámetros
@@ -252,9 +283,21 @@
             realizarFiltro(params);
         });
 
-        // 2. Manejar el cambio en los SELECT de Ubicación
-        $('#filter-estado, #filter-municipio').on('change', function(e) {
-            // Al cambiar cualquier combo, volvemos a filtrar
+        // 2. Manejar el cambio en el SELECT de ESTADO (DISPARADOR DEL FILTRO EN CASCADA)
+        $('#filter-estado').on('change', function() {
+            var estadoSeleccionado = $(this).val();
+            
+            // 2.1. Cargar solo los municipios del estado seleccionado
+            cargarMunicipios(estadoSeleccionado);
+            
+            // 2.2. Asegurarse de que el filtro principal se ejecute (esto incluye el filtro de especie)
+            var params = obtenerParamsFiltro();
+            realizarFiltro(params);
+        });
+        
+        // 3. Manejar el cambio en el SELECT de MUNICIPIO
+        $('#filter-municipio').on('change', function() {
+            // Al cambiar el municipio, volvemos a filtrar (Estado ya está incluido en obtenerParamsFiltro)
             var params = obtenerParamsFiltro();
             realizarFiltro(params);
         });
