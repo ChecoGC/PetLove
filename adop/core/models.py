@@ -131,8 +131,8 @@ class Refugio(models.Model):
     
     nombre = models.CharField(max_length=100)
     direccion = models.CharField(max_length=200, help_text="Calle, número, colonia, etc.")
-    estado = models.CharField(max_length=100) # Nuevo campo
-    municipio = models.CharField(max_length=100) # Nuevo campo
+    estado = models.CharField(max_length=100)
+    municipio = models.CharField(max_length=100)
     
     telefono = models.CharField(max_length=20)
     correo = models.EmailField(blank=True, null=True)
