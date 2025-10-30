@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from django.db import models
+
 
 class Mascota(models.Model):
     STATUS_CHOICES = [
@@ -44,7 +44,14 @@ class Mascota(models.Model):
         choices=STATUS_CHOICES,
         default='disponible'
     )
-
+    refugio = models.ForeignKey(
+        'Refugio', 
+        on_delete=models.SET_NULL,
+        null=True, 
+        blank=True,
+        related_name='mascotas', 
+        help_text="Refugio donde se encuentra la mascota."
+    )
     fecha_registro = models.DateTimeField(auto_now_add=True)
     vacunado = models.BooleanField(default=False)
     esterilizado = models.BooleanField(default=False)
@@ -117,3 +124,22 @@ class Mensaje(models.Model):
     fecha_mensaje = models.DateTimeField(default=timezone.now)    
     def __str__(self):
         return f"mensaje de {self.nombre_apellido} del {self.fecha_mensaje}" 
+    
+
+class Refugio(models.Model):
+    refugio_id = models.AutoField(primary_key=True) 
+    
+    nombre = models.CharField(max_length=100)
+    direccion = models.CharField(max_length=200, help_text="Calle, número, colonia, etc.")
+    estado = models.CharField(max_length=100) # Nuevo campo
+    municipio = models.CharField(max_length=100) # Nuevo campo
+    
+    telefono = models.CharField(max_length=20)
+    correo = models.EmailField(blank=True, null=True)
+    capacidad = models.PositiveIntegerField(
+        help_text="Número máximo de animales que puede albergar",
+        default=0
+    )
+
+    def __str__(self):
+        return self.nombre

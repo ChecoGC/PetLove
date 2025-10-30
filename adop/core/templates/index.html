@@ -3,70 +3,10 @@
 {% block title %}Lista de mascotas{% endblock %}
 
 {% block content %}
-
-    
-
-   
-
-
-<!-- quiero poder filtar entre, perros, gatos y otros-->
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Adopta tu mascota</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <style>
-        /* Contenedor principal centrado y con separacion */
-        body {
-            background-color: #f8f9fa;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* Imagenes del mismo tamanio */
-        .pet-img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-top-left-radius: 0.25rem;
-            border-top-right-radius: 0.25rem;
-        }
-
-        /* Todas las tarjetas de la misma altura */
-        .card {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .card-body {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        /* Boton que se mantiene alineado al final */
-        .card-body .btn {
-            margin-top: auto;
-        }
-    </style>
-</head>
-<body>
     <div class="container mt-5">
-        <h1 class="text-center mb-5">BIENVENIDO, ADOPTA TU MASCOTA</h1>
+        <h1 class="text-center mb-5">ADOPTA TU MASCOTA</h1> 
          <div id="mascotas-listado">
             {% include 'mascota_list.html' %} 
          </div>
     </div>
-</body>
-</html>
-
-{% endblock %}
+    {% endblock %}

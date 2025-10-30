@@ -1,8 +1,10 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Mascota, SolicitudAdopcion, Mensaje
+from .models import Mascota, SolicitudAdopcion, Mensaje, Refugio
 
 from rest_framework import viewsets
-from .serializers import MascotaSerializer, SolicitudAdopcionSerializer, MensajeSerializer
+from .serializers import MascotaSerializer, SolicitudAdopcionSerializer, MensajeSerializer, RefugioSerializer
+from django.shortcuts import render
+from .models import Mascota
 
 #Vista basada en una funcion
 def index(request):
@@ -23,6 +25,10 @@ def formulario_adopcion(request, mascota_id):
     mascota = Mascota.objects.get(id=mascota_id)
     return render(request, "formulario_adopcion.html", {"mascota": mascota})
 
+class RefugioViewSet(viewsets.ModelViewSet):
+    queryset = Refugio.objects.all()
+    serializer_class = RefugioSerializer
+
 class SolicitudAdopcionViewSet(viewsets.ModelViewSet):
     queryset = SolicitudAdopcion.objects.all()
     serializer_class = SolicitudAdopcionSerializer
@@ -30,9 +36,14 @@ class SolicitudAdopcionViewSet(viewsets.ModelViewSet):
 class MensajeViewSet(viewsets.ModelViewSet):
     queryset = Mensaje.objects.all()
     serializer_class = MensajeSerializer
+
 def mensaje(request):
     template_name = 'contacto.html'
     return render (request, template_name)
+
+def registrar_refugio(request):
+    template_name = 'registro_refugio.html'
+    return render(request, template_name)
 
 def filtrar_mascotas_view(request):
     especie = request.GET.get('especie', '')

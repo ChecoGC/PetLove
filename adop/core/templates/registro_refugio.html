@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Registro de Refugio{% endblock %}
+
+{% block content %}
+
+<div class="container my-5">
+    <div class="text-center mb-4">
+        <h2 class="text-info mt-3">Registrar Nuevo Refugio</h2>
+        <p>Complete el formulario para crear un nuevo registro de refugio.</p>
+    </div>
+
+    <form id="refugioForm" class="border p-4 rounded shadow-sm bg-light">
+        {% csrf_token %}
+        
+        <h4 class="text-primary mb-3">Información General</h4>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Nombre del Refugio</label>
+                <input type="text" name="nombre" class="form-control" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Teléfono de contacto</label>
+                <input type="tel" name="telefono" class="form-control" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Correo electrónico</label>
+                <input type="email" name="correo" class="form-control">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Capacidad Máxima</label>
+                <input type="number" name="capacidad" class="form-control" min="0" required>
+            </div>
+        </div>
+
+        <h4 class="text-primary mb-3 mt-4">Ubicación</h4>
+
+        <div class="mb-3">
+            <label class="form-label">Dirección Física</label>
+            <input type="text" name="direccion" class="form-control" required>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Estado</label>
+                <input type="text" name="estado" class="form-control" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Municipio</label>
+                <input type="text" name="municipio" class="form-control" required>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100 mt-4">
+            Registrar Refugio
+        </button>
+    </form>
+    
+    <p id="resultado" class="text-center mt-3"></p>
+</div>
+
+<script>
+const form = document.getElementById("refugioForm");
+const resultado = document.getElementById("resultado");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const data = {
+    nombre: form.nombre.value,
+    direccion: form.direccion.value,
+    telefono: form.telefono.value,
+    correo: form.correo.value,
+    capacidad: parseInt(form.capacidad.value),
+    estado: form.estado.value,
+    municipio: form.municipio.value
+  };
+
+  try {
+    // Endpoint de la API: /api/refugios/
+    const response = await fetch("/api/refugios/", {  
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+      },
+      body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+    console.log(result); 
+
+    if (response.status === 201 || response.status === 200) {
+      resultado.textContent = "Refugio registrado correctamente";
+      resultado.style.color = "green";
+      form.reset();
+    } else {
+      resultado.textContent = "Error al registrar: " + JSON.stringify(result);
+      resultado.style.color = "red";
+    }
+  } catch (error) {
+    resultado.textContent = "Error de conexión: " + error.message;
+    resultado.style.color = "red";
+  }
+});
+</script>
+
+<style>
+  form h4 {
+    border-bottom: 2px solid #0dcaf0;
+    padding-bottom: 5px;
+  }
+  .form-control { 
+      border-radius: 8px !important;
+  }
+</style>
+
+{% endblock %}
