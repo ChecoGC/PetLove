@@ -3,7 +3,7 @@ from .views import index, mensaje, registrar_refugio
 from . import views
 
 from rest_framework import routers
-from .views import MascotaViewSet , SolicitudAdopcionViewSet, MensajeViewSet, RefugioViewSet
+from .views import MascotaViewSet , SolicitudAdopcionViewSet, MensajeViewSet, RefugioViewSet, obtener_filtros_ubicacion
 
 router = routers.DefaultRouter()
 router.register(r'api/mascotas', MascotaViewSet)
@@ -16,6 +16,7 @@ urlpatterns = [
     path('mascota/<int:id>/', views.detalle_mascota, name='detalle_mascota'),
     path("adoptar/<int:mascota_id>/", views.formulario_adopcion, name="formulario_adopcion"),
     path('mensaje/', mensaje, name='mensaje'),
+    path('api/filtros-ubicacion/', obtener_filtros_ubicacion, name='filtros_ubicacion_api'),
     path('registrar-refugio/', registrar_refugio, name='registrar_refugio'),
     path('', include(router.urls)),
     path('filtrar/', views.filtrar_mascotas_view, name='filtrar_mascotas'),

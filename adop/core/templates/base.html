@@ -118,18 +118,38 @@
             <!-- Barra lateral izquierda -->
             <aside class="col-md-2 sidebar-left">
                 {% block sidebar_left %}
+                    
                     <h5>Filtrar Especie</h5>
-                    <div class="list-group">
+                    <div class="list-group mb-4">
                         <button class="list-group-item list-group-item-action filter-btn" data-especie="perro">
                             Perros
                         </button>
                         <button class="list-group-item list-group-item-action filter-btn" data-especie="gato">
                             Gatos
                         </button>
-                        <button class="list-group-item list-group-item-action filter-btn" data-especie="">
+                        <button class="list-group-item list-group-item-action filter-btn" data-especie="" id="mostrar-todos-btn">
                             Mostrar Todos
                         </button>
                     </div>
+                    
+                    <h5 class="mt-4">Filtrar por Ubicación del Refugio</h5>
+                    
+                    <div class="mb-3">
+                        <label for="filter-estado" class="form-label">Estado:</label>
+                        <select id="filter-estado" class="form-control mb-2">
+                            <option value="">Todos los Estados</option>
+                            </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="filter-municipio" class="form-label">Municipio:</label>
+                        <select id="filter-municipio" class="form-control">
+                            <option value="">Todos los Municipios</option>
+                            </select>
+                    </div>
+                    
+                    <p class="text-muted small mt-2">Filtra la lista al seleccionar.</p>
+
                 {% endblock %}
             </aside>
 
@@ -155,27 +175,90 @@
     <footer>
         <p></p>
     </footer>
+    
+
     <script>
     $(document).ready(function() {
-        $('.filter-btn').on('click', function(e) {
-            e.preventDefault();
-            
-            var especie = $(this).data('especie');
+        
+        var currentEspecie = ''; 
+        
+        // Función para llenar los select de Estado y Municipio
+        function cargarFiltrosUbicacion() {
+            var url = "{% url 'filtros_ubicacion_api' %}"; 
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(data) {
+                    var estadoSelect = $('#filter-estado');
+                    var municipioSelect = $('#filter-municipio');
+                    
+                    // Llenar Estados
+                    data.estados.forEach(function(estado) {
+                        estadoSelect.append('<option value="' + estado + '">' + estado + '</option>');
+                    });
+                    
+                    // Llenar Municipios
+                    data.municipios.forEach(function(municipio) {
+                        municipioSelect.append('<option value="' + municipio + '">' + municipio + '</option>');
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error al cargar filtros de ubicación:", error);
+                }
+            });
+        }
+        
+        // Llamar la función al cargar la página para popular los combos
+        cargarFiltrosUbicacion();
+
+
+        // Función central que realiza la petición AJAX con todos los parámetros
+        function realizarFiltro(params) {
             var url = "{% url 'filtrar_mascotas' %}"; 
             
             $.ajax({
                 url: url,
                 type: 'GET',
-                data: {'especie': especie},
+                data: params,
                 success: function(data) {
                     $('#mascotas-listado').html(data); 
                 },
                 error: function(xhr, status, error) {
-                    
                     console.error("Error al filtrar mascotas:", error);
                 }
             });
+        }
+
+        // Función unificada para obtener los parámetros actuales de todos los filtros
+        function obtenerParamsFiltro() {
+            return {
+                especie: currentEspecie,
+                estado: $('#filter-estado').val(),
+                municipio: $('#filter-municipio').val()
+            };
+        }
+        
+
+        // 1. Manejar el click de los botones de ESPECIE
+        $('.filter-btn').on('click', function(e) {
+            e.preventDefault();
+            
+            currentEspecie = $(this).data('especie');
+            $('.filter-btn').removeClass('active');
+            $(this).addClass('active');
+
+            var params = obtenerParamsFiltro();
+            realizarFiltro(params);
         });
+
+        // 2. Manejar el cambio en los SELECT de Ubicación
+        $('#filter-estado, #filter-municipio').on('change', function(e) {
+            // Al cambiar cualquier combo, volvemos a filtrar
+            var params = obtenerParamsFiltro();
+            realizarFiltro(params);
+        });
+        
     });
     </script>
 </body>

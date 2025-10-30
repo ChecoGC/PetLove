@@ -5,6 +5,7 @@ from rest_framework import viewsets
 from .serializers import MascotaSerializer, SolicitudAdopcionSerializer, MensajeSerializer, RefugioSerializer
 from django.shortcuts import render
 from .models import Mascota
+from django.http import JsonResponse
 
 #Vista basada en una funcion
 def index(request):
@@ -47,10 +48,35 @@ def registrar_refugio(request):
 
 def filtrar_mascotas_view(request):
     especie = request.GET.get('especie', '')
+    estado = request.GET.get('estado', '')       
+    municipio = request.GET.get('municipio', '') 
+
+    mascotas = Mascota.objects.all().select_related('refugio') 
 
     if especie:
-        mascotas = Mascota.objects.filter(tipo__iexact=especie)
-    else:
-        mascotas = Mascota.objects.all()
+        mascotas = mascotas.filter(tipo__iexact=especie)
+        
+    if estado:
+        mascotas = mascotas.filter(refugio__estado__iexact=estado)
+
+    if municipio:
+        mascotas = mascotas.filter(refugio__municipio__iexact=municipio)
+        
     context = {'mascotas': mascotas}
     return render(request, 'mascota_list.html', context)
+
+
+
+def obtener_filtros_ubicacion(request):
+    """Devuelve listas únicas de estados y municipios de los refugios."""
+    
+    estados_unicos = Refugio.objects.values_list('estado', flat=True).distinct().order_by('estado')
+    
+    municipios_unicos = Refugio.objects.values_list('municipio', flat=True).distinct().order_by('municipio')
+    
+    data = {
+        'estados': list(estados_unicos),
+        'municipios': list(municipios_unicos)
+    }
+    
+    return JsonResponse(data)
