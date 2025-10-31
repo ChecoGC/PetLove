@@ -118,7 +118,6 @@
             <!-- Barra lateral izquierda -->
             <aside class="col-md-2 sidebar-left">
                 {% block sidebar_left %}
-                    
                     <h5>Filtrar Especie</h5>
                     <div class="list-group mb-4">
                         <button class="list-group-item list-group-item-action filter-btn" data-especie="perro">
@@ -147,8 +146,6 @@
                             <option value="">Todos los Municipios</option>
                             </select>
                     </div>
-                    
-                    <p class="text-muted small mt-2">Filtra la lista al seleccionar.</p>
 
                 {% endblock %}
             </aside>
@@ -176,132 +173,113 @@
         <p></p>
     </footer>
     
-
     <script>
-    $(document).ready(function() {
-        
-        var currentEspecie = ''; 
-        
-        // Función para llenar SOLO los select de Municipios basado en el estado
-        function cargarMunicipios(estadoSeleccionado) {
-            var url = "{% url 'filtros_ubicacion_api' %}"; 
-            var municipioSelect = $('#filter-municipio');
-            
-            // 1. Limpiar opciones viejas, excepto la primera ("Todos...")
-            municipioSelect.find('option:gt(0)').remove();
-            
-            // 2. Si no hay estado seleccionado, no cargar nada y salir
+        document.addEventListener("DOMContentLoaded", () => {
+        const estadoSelect = document.getElementById("filter-estado");
+        const municipioSelect = document.getElementById("filter-municipio");
+        const mascotaContainer = document.getElementById("mascotas-listado");
+        const filterButtons = document.querySelectorAll(".filter-btn");
+        let currentEspecie = "";
+
+        const urlFiltros = "{% url 'filtros_ubicacion_api' %}";
+        const urlFiltrar = "{% url 'filtrar_mascotas' %}";
+
+        fetch(urlFiltros)
+            .then(response => response.json())
+            .then(data => {
+                data.estados.forEach(estado => {
+                    const option = document.createElement("option");
+                    option.value = estado;
+                    option.textContent = estado;
+                    estadoSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Error al cargar estados:", error));
+
+        estadoSelect.addEventListener("change", () => {
+            const estadoSeleccionado = estadoSelect.value;
+            municipioSelect.innerHTML = '<option value="">Todos los Municipios</option>';
+
             if (!estadoSeleccionado) {
+                realizarFiltro();
                 return;
             }
 
-            // 3. Petición AJAX, enviando el estado como parámetro GET
-            $.ajax({
-                url: url,
-                type: 'GET',
-                data: { estado: estadoSeleccionado }, // <-- Enviar el estado seleccionado
-                success: function(data) {
-                    // Llenar Municipios
-                    data.municipios.forEach(function(municipio) {
-                        municipioSelect.append('<option value="' + municipio + '">' + municipio + '</option>');
+            fetch(`${urlFiltros}?estado=${estadoSeleccionado}`)
+                .then(response => response.json())
+                .then(data => {
+                    data.municipios.forEach(municipio => {
+                        const option = document.createElement("option");
+                        option.value = municipio;
+                        option.textContent = municipio;
+                        municipioSelect.appendChild(option);
                     });
-                    
-                    // 4. Iniciar el filtro principal después de cargar los municipios (opcional, pero mejora la UX)
-                    realizarFiltro(obtenerParamsFiltro());
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error al cargar municipios:", error);
-                }
+                })
+                .then(() => realizarFiltro())
+                .catch(error => console.error("Error al cargar municipios:", error));
+        });
+
+        municipioSelect.addEventListener("change", realizarFiltro);
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                e.preventDefault();
+                currentEspecie = btn.dataset.especie;
+                filterButtons.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                realizarFiltro();
             });
+        });
+
+        function renderMascotas(mascotas) {
+            mascotaContainer.innerHTML = "";
+
+            if (mascotas.length === 0) {
+                mascotaContainer.innerHTML = `
+                    <div class="col-12">
+                        <p class="alert alert-warning">No se encontraron mascotas con el filtro aplicado.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const row = document.createElement("div");
+            row.classList.add("row");
+
+            mascotas.forEach(m => {
+                const card = document.createElement("div");
+                card.classList.add("col-md-4", "mb-4");
+
+                card.innerHTML = `
+                    <div class="card shadow">
+                        <img src="${m.foto}" class="card-img-top pet-img" alt="${m.nombre}">
+                        <div class="card-body">
+                            <h5 class="card-title">${m.nombre}</h5>
+                            <p class="card-text">${m.descripcion ? m.descripcion.substring(0, 100) : ""}</p>
+                            <a href="/mascota/${m.id}/" class="btn btn-primary">Ver Detalles</a>
+                        </div>
+                    </div>
+                `;
+                row.appendChild(card);
+            });
+
+            mascotaContainer.appendChild(row);
         }
 
-
-        // Función inicial para llenar SOLO el select de Estados
-        function cargarFiltrosIniciales() {
-            var url = "{% url 'filtros_ubicacion_api' %}"; 
-
-            $.ajax({
-                url: url,
-                type: 'GET',
-                success: function(data) {
-                    var estadoSelect = $('#filter-estado');
-                    
-                    // Llenar Estados (la primera opción es "Todos los Estados")
-                    data.estados.forEach(function(estado) {
-                        estadoSelect.append('<option value="' + estado + '">' + estado + '</option>');
-                    });
-
-                    // Cargar municipios sin filtro inicial (opcional: solo se cargan si el usuario selecciona un estado)
-                    // cargarMunicipios(''); 
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error al cargar filtros iniciales:", error);
-                }
-            });
-        }
-        
-        // Llamar la función inicial al cargar la página
-        cargarFiltrosIniciales();
-
-
-        // Función central que realiza la petición AJAX con todos los parámetros
-        function realizarFiltro(params) {
-            var url = "{% url 'filtrar_mascotas' %}"; 
-            
-            $.ajax({
-                url: url,
-                type: 'GET',
-                data: params,
-                success: function(data) {
-                    $('#mascotas-listado').html(data); 
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error al filtrar mascotas:", error);
-                }
-            });
-        }
-
-        // Función unificada para obtener los parámetros actuales de todos los filtros
-        function obtenerParamsFiltro() {
-            return {
+        function realizarFiltro() {
+            const params = new URLSearchParams({
                 especie: currentEspecie,
-                estado: $('#filter-estado').val(),
-                municipio: $('#filter-municipio').val()
-            };
+                estado: estadoSelect.value,
+                municipio: municipioSelect.value
+            });
+
+            fetch(`${urlFiltrar}?${params.toString()}`)
+                .then(response => response.json())
+                .then(data => renderMascotas(data.mascotas))
+                .catch(error => console.error("Error al filtrar mascotas:", error));
         }
-        
 
-        // 1. Manejar el click de los botones de ESPECIE
-        $('.filter-btn').on('click', function(e) {
-            e.preventDefault();
-            
-            currentEspecie = $(this).data('especie');
-            $('.filter-btn').removeClass('active');
-            $(this).addClass('active');
-
-            var params = obtenerParamsFiltro();
-            realizarFiltro(params);
-        });
-
-        // 2. Manejar el cambio en el SELECT de ESTADO (DISPARADOR DEL FILTRO EN CASCADA)
-        $('#filter-estado').on('change', function() {
-            var estadoSeleccionado = $(this).val();
-            
-            // 2.1. Cargar solo los municipios del estado seleccionado
-            cargarMunicipios(estadoSeleccionado);
-            
-            // 2.2. Asegurarse de que el filtro principal se ejecute (esto incluye el filtro de especie)
-            var params = obtenerParamsFiltro();
-            realizarFiltro(params);
-        });
-        
-        // 3. Manejar el cambio en el SELECT de MUNICIPIO
-        $('#filter-municipio').on('change', function() {
-            // Al cambiar el municipio, volvemos a filtrar (Estado ya está incluido en obtenerParamsFiltro)
-            var params = obtenerParamsFiltro();
-            realizarFiltro(params);
-        });
-        
+        realizarFiltro();
     });
     </script>
 </body>
