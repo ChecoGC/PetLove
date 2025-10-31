@@ -1,18 +1,32 @@
+import requests
 from django.shortcuts import render, get_object_or_404
 from .models import Mascota, SolicitudAdopcion, Mensaje, Refugio
 
 from rest_framework import viewsets
 from .serializers import MascotaSerializer, SolicitudAdopcionSerializer, MensajeSerializer, RefugioSerializer
-from django.shortcuts import render
 from .models import Mascota
 from django.http import JsonResponse
 
+
 #Vista basada en una funcion
+# cargan los datos desde el orm
+
 def index(request):
-    template_name = "index.html"
-    mascotas = Mascota.objects.all()
+    # template_name = "index.html"
+    # mascotas = Mascota.objects.all()
+    # context = {'mascotas': mascotas}
+    # return render(request, template_name)
+    api_url = request.build_absolute_uri('/api/mascotas/')
+    response = requests.get(api_url)
+
+    if response.status_code == 200:
+        mascotas = response.json()
+    else:
+        mascotas = []
+
     context = {'mascotas': mascotas}
-    return render(request, template_name,context)
+    return render(request, 'index.html', context)
+
 
 def detalle_mascota(request, id):
     mascota = get_object_or_404(Mascota, id=id)

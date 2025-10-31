@@ -11,6 +11,7 @@ router.register(r'api/formularios', SolicitudAdopcionViewSet)
 router.register(r'api/mensaje', MensajeViewSet)
 router.register(r'api/refugios', RefugioViewSet)
 
+
 urlpatterns = [
     path('', index, name='inicio'),
     path('mascota/<int:id>/', views.detalle_mascota, name='detalle_mascota'),
