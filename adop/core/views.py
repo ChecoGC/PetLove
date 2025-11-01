@@ -1,5 +1,5 @@
 import requests
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Mascota, SolicitudAdopcion, Mensaje, Refugio
 
 from rest_framework import viewsets
@@ -9,6 +9,8 @@ from .models import Mascota
 from django.template.loader import render_to_string
 from django.http import JsonResponse, HttpResponse
 from .models import Mascota, Refugio
+
+from django.contrib.auth import authenticate, login, logout
 
 #Vista basada en una funcion
 # cargan los datos desde la api
@@ -106,3 +108,21 @@ def obtener_filtros_ubicacion(request):
         'estados': list(estados),
         'municipios': list(municipios)
     })
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            login(request, user)  # inicia sesion
+            return redirect('inicio')
+        else:
+            return render(request, 'login.html', {'error': 'Credenciales inválidas'})
+
+    return render(request, 'login.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect('inicio')
