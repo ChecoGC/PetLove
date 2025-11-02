@@ -1,5 +1,7 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
+
 
 
 class Mascota(models.Model):
@@ -122,6 +124,14 @@ class Mensaje(models.Model):
     email = models.EmailField()
     mensaje = models.TextField(blank=True, null=True)
     fecha_mensaje = models.DateTimeField(default=timezone.now)    
+    usuario = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="mensajes"
+    )
+
     def __str__(self):
         return f"mensaje de {self.nombre_apellido} del {self.fecha_mensaje}" 
     

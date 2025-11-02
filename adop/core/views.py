@@ -55,6 +55,12 @@ class SolicitudAdopcionViewSet(viewsets.ModelViewSet):
 class MensajeViewSet(viewsets.ModelViewSet):
     queryset = Mensaje.objects.all()
     serializer_class = MensajeSerializer
+    
+    def perform_create(self, serializer):
+        if self.request.user.is_authenticated:
+            serializer.save(usuario=self.request.user)  # ✅ asigna usuario autenticado
+        else:
+            serializer.save()
 
 def mensaje(request):
     template_name = 'contacto.html'
@@ -117,9 +123,14 @@ def login_view(request):
         
         if user is not None:
             login(request, user)  # inicia sesion
-            return redirect('inicio')
+            if user.groups.filter(name='refugio').exists():
+                return redirect('/admin/')
+            elif user.groups.filter(name='adoptante').exists():
+                return redirect('inicio')
+            else:
+                return redirect('inicio')
         else:
-            return render(request, 'login.html', {'error': 'Credenciales inválidas'})
+            return render(request, 'login.html', {'error': 'Usuario y/o contraseǹa incorrectas'})
 
     return render(request, 'login.html')
 
