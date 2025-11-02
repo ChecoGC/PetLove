@@ -2,7 +2,7 @@ import requests
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Mascota, SolicitudAdopcion, Mensaje, Refugio
 
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from .serializers import MascotaSerializer, SolicitudAdopcionSerializer, MensajeSerializer, RefugioSerializer
 from .models import Mascota
 
@@ -11,7 +11,7 @@ from django.http import JsonResponse, HttpResponse
 from .models import Mascota, Refugio
 
 from django.contrib.auth import authenticate, login, logout
-
+from django.contrib.auth.decorators import login_required
 #Vista basada en una funcion
 # cargan los datos desde la api
 
@@ -55,10 +55,11 @@ class SolicitudAdopcionViewSet(viewsets.ModelViewSet):
 class MensajeViewSet(viewsets.ModelViewSet):
     queryset = Mensaje.objects.all()
     serializer_class = MensajeSerializer
-    
+
     def perform_create(self, serializer):
         if self.request.user.is_authenticated:
-            serializer.save(usuario=self.request.user)  # ✅ asigna usuario autenticado
+            #aqui asigna el usuario
+            serializer.save(usuario=self.request.user)
         else:
             serializer.save()
 
@@ -137,3 +138,16 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('inicio')
+
+# devuelve los mensajes de el usuario
+class MisMensajesViewSet(viewsets.ModelViewSet):
+    serializer_class = MensajeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Mensaje.objects.all()
+    def get_queryset(self):
+        return Mensaje.objects.filter(usuario=self.request.user)
+    
+
+@login_required
+def mis_mensajes_page(request):
+    return render(request, 'mis_mensajes.html')

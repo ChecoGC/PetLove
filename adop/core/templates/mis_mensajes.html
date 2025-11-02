@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Mis mensajes</h2>
+  <div id="mensajes-container" class="row gy-3 justify-content-center">
+    <!-- Aquí se insertarán las tarjetas -->
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const response = await fetch("/api/mis-mensajes/", {
+      method: "GET",
+      credentials: "same-origin", // importante para usar la sesión
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al cargar los mensajes");
+    }
+
+    const mensajes = await response.json();
+    const contenedor = document.getElementById("mensajes-container");
+
+    if (mensajes.length === 0) {
+      contenedor.innerHTML = `
+        <p class="text-center text-muted">No tienes mensajes aún.</p>
+      `;
+      return;
+    }
+
+    mensajes.forEach(msg => {
+      const tarjeta = `
+        <div class="col-md-5">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">${msg.nombre_apellido}</h5>
+              <p class="card-text text-muted small">${new Date(msg.fecha_mensaje).toLocaleString()}</p>
+              <p class="card-text">${msg.mensaje}</p>
+              <hr>
+              <p class="mb-0"><strong>Email:</strong> ${msg.email}</p>
+              <p class="mb-0"><strong>Teléfono:</strong> ${msg.telefono}</p>
+            </div>
+          </div>
+        </div>
+      `;
+      contenedor.insertAdjacentHTML("beforeend", tarjeta);
+    });
+  } catch (error) {
+    console.error(error);
+    document.getElementById("mensajes-container").innerHTML = `
+      <p class="text-center text-danger">Error al cargar tus mensajes.</p>
+    `;
+  }
+});
+</script>
+{% endblock %}
