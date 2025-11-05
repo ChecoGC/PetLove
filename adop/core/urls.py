@@ -24,5 +24,6 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('mis-mensajes/', views.mis_mensajes_page, name='mis_mensajes_page'),
+    path('editar_mensaje/', views.editar_mensaje_page, name='editar_mensaje_page'),
     path('', include(router.urls)),
 ]

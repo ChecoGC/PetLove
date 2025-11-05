@@ -151,3 +151,7 @@ class MisMensajesViewSet(viewsets.ModelViewSet):
 @login_required
 def mis_mensajes_page(request):
     return render(request, 'mis_mensajes.html')
+
+
+def editar_mensaje_page(request):
+    return render(request, 'editar_mensaje.html')

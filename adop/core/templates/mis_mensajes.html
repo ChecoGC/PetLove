@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     const response = await fetch("/api/mis-mensajes/", {
       method: "GET",
-      credentials: "same-origin", // importante para usar la sesión
+      credentials: "same-origin", 
     });
 
     if (!response.ok) {
@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               <hr>
               <p class="mb-0"><strong>Email:</strong> ${msg.email}</p>
               <p class="mb-0"><strong>Teléfono:</strong> ${msg.telefono}</p>
+              <a href="/editar_mensaje/?id=${msg.id}" class="btn btn-sm btn-outline-primary">Editar</a>
             </div>
           </div>
         </div>

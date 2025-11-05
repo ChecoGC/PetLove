@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Registro de Refugio{% endblock %}
+
+{% block content %}
+
+<form id="editForm" class="p-3 border rounded bg-light">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label>Nombre y Apellido</label>
+    <input type="text" id="nombre_apellido" class="form-control" required>
+  </div>
+  <div class="mb-3">
+    <label>Teléfono</label>
+    <input type="text" id="telefono" class="form-control">
+  </div>
+  <div class="mb-3">
+    <label>Email</label>
+    <input type="email" id="email" class="form-control">
+  </div>
+  <div class="mb-3">
+    <label>Mensaje</label>
+    <textarea id="mensaje" class="form-control" rows="3"></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Guardar cambios</button>
+  <button type="button" id="btnEliminar" class="btn btn-danger">Eliminar</button>
+</form>
+
+<p id="resultado" class="mt-3"></p>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const mensajeId = params.get("id");
+
+const form = document.getElementById("editForm");
+const resultado = document.getElementById("resultado");
+const btnEliminar = document.getElementById("btnEliminar");
+
+// Cargar datos del mensaje
+async function cargarMensaje() {
+  try {
+    const response = await fetch(`/api/mensaje/${mensajeId}/`);
+    if (!response.ok) throw new Error("No se pudo obtener el mensaje");
+    const data = await response.json();
+
+    form.nombre_apellido.value = data.nombre_apellido;
+    form.telefono.value = data.telefono;
+    form.email.value = data.email;
+    form.mensaje.value = data.mensaje;
+  } catch (error) {
+    resultado.textContent = "Error cargando mensaje: " + error;
+    resultado.style.color = "red";
+  }
+}
+
+// Guardar cambios parciales (PATCH)
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const data = {
+    nombre_apellido: form.nombre_apellido.value,
+    telefono: form.telefono.value,
+    email: form.email.value,
+    mensaje: form.mensaje.value
+  };
+
+  try {
+    const response = await fetch(`/api/mensaje/${mensajeId}/`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (response.ok) {
+      resultado.textContent = "Cambios guardados correctamente";
+      resultado.style.color = "green";
+    } else {
+      const err = await response.json();
+      resultado.textContent = "Error al guardar: " + JSON.stringify(err);
+      resultado.style.color = "red";
+    }
+  } catch (error) {
+    resultado.textContent = "Error de conexión 1";
+    resultado.style.color = "red";
+  }
+});
+
+// Eliminar mensaje
+btnEliminar.addEventListener("click", async () => {
+  if (!confirm("¿Seguro que deseas eliminar este mensaje?")) return;
+
+  try {
+    const response = await fetch(`/api/mensaje/${mensajeId}/`, {
+      method: "DELETE",
+      headers: {
+        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+      }
+    });
+
+    if (response.ok) {
+      alert("Mensaje eliminado correctamente");
+      window.location.href = "/mis-mensajes";
+    } else {
+      resultado.textContent = "Error al eliminar";
+      resultado.style.color = "red";
+    }
+  } catch (error) {
+    resultado.textContent = "Error de conexión 2";
+    resultado.style.color = "red";
+  }
+});
+
+cargarMensaje();
+</script>
+
+
+{% endblock %}
