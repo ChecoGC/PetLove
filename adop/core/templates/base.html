@@ -11,17 +11,18 @@
         body {
             background-color: #f8f9fa;
         }
-
         .banner {
-            background-color: #bffbfb;
+            background-color: #82ffae;
             color: #200110;
             padding: 0.5rem;
             text-align: center;
         }
         nav{
-            border: 1px solid #343a40;
+            border: 2px dotted #85ffac;
             padding: 0;
             margin: 0;
+            min-height: 80px;
+            text-align: right;
         }
         .container a{
             border: 1px solid black;
@@ -31,22 +32,43 @@
             padding: 0px;
             margin: 0;
         }
+        .navbar-brand{
+            background-color: #b6ffcf;
+            padding: 10px;
+            margin-right: 10%;
+            border-radius:15%;
+            
+        }
         .nav-item{
-            border: 1px solid #343a40;
+            background-color: #b6ffcf;
+            font-style: normal;
+            color: #f8f9fa;
             padding: 0;
             margin: 0;
+            font-size: 18px;
+            margin-left: 10px;
+            padding: 10px;
+            border-radius:15%;
         }
+        .nav-item:hover{
+            background-color: #82ffae;  
+            color: white;          
+        }
+        .nav-link{
+            color: red;
+        }
+        
 
         .sidebar-left,
         .sidebar-right {
-            background-color: #e9ecef;
+            background-color: #c1e0ff;
             padding: 1rem;
             min-height: 100vh;
         }
 
         .content {
             /* padding: 2rem; */
-            background-color: #f5f7f7;
+            background-color: #e2e2e2;
         }
 
         footer {
@@ -79,6 +101,7 @@
         .card-body .btn {
             margin-top: auto;
         }
+        
     </style>
 
     {% block extra_head %}{% endblock %}
@@ -99,7 +122,7 @@
                 aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
             </button>
 
-            <div class="collapse navbar-collapse justify-content-center" id="navbarMenu">
+            <div class="collapse navbar-collapse justify-content-center align-items-center" id="navbarMenu">
                 <ul class="collapse navbar-collapse justify-content-center" id="navbarMenu">
                     <ul class="navbar-nav">
                         <li class="nav-item"><a class="nav-link" href="#">Donar</a></li>
