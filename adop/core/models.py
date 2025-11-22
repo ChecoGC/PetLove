@@ -1,8 +1,30 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
+from django.db.models.signals import m2m_changed
+from django.dispatch import receiver
 
-
+@receiver(m2m_changed, sender=User.groups.through)
+def set_staff_status_on_group_change(sender, instance, action, **kwargs):
+    """
+    Activa is_staff=True si el usuario es agregado al grupo 'refugio'.
+    """
+    if action in ['post_add', 'post_remove', 'post_clear']:
+        try:
+            refugio_group = Group.objects.get(name='refugio')
+            is_refugio = instance.groups.filter(pk=refugio_group.pk).exists()
+            
+            if is_refugio and not instance.is_staff:
+                instance.is_staff = True
+                instance.save()
+            
+            elif not is_refugio and instance.is_staff and not instance.is_superuser:
+                instance.is_staff = False
+                instance.save()
+                
+        except Group.DoesNotExist:
+            pass
 
 class Mascota(models.Model):
     STATUS_CHOICES = [
@@ -153,3 +175,27 @@ class Refugio(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+
+    
+def is_refugio(self):
+    return self.groups.filter(name='refugio').exists()
+
+User.add_to_class('is_refugio', is_refugio)
+
+class PerfilRefugio(models.Model):
+    usuario = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='perfil_refugio' 
+    )
+    refugio = models.ForeignKey(
+        'Refugio',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='usuarios'
+    )
+
+    def __str__(self):
+        return f"Perfil de {self.usuario.username}"

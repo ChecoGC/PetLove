@@ -125,7 +125,7 @@ def login_view(request):
         if user is not None:
             login(request, user)  # inicia sesion
             if user.groups.filter(name='refugio').exists():
-                return redirect('/admin/')
+                return redirect('inicio')
             elif user.groups.filter(name='adoptante').exists():
                 return redirect('inicio')
             else:
