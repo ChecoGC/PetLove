@@ -30,22 +30,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     mensajes.forEach(msg => {
-      const tarjeta = `
-        <div class="col-md-5">
-          <div class="card shadow-sm">
-            <div class="card-body">
-              <h5 class="card-title">${msg.nombre_apellido}</h5>
-              <p class="card-text text-muted small">${new Date(msg.fecha_mensaje).toLocaleString()}</p>
-              <p class="card-text">${msg.mensaje}</p>
-              <hr>
-              <p class="mb-0"><strong>Email:</strong> ${msg.email}</p>
-              <p class="mb-0"><strong>Teléfono:</strong> ${msg.telefono}</p>
-              <a href="/editar_mensaje/?id=${msg.id}" class="btn btn-sm btn-outline-primary">Editar</a>
-            </div>
+      const col = document.createElement("div");
+      col.classList.add("col-md-5");
+
+      col.innerHTML = `
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title"></h5> 
+            <p class="card-text text-muted small">${new Date(msg.fecha_mensaje).toLocaleString()}</p>
+            <p class="card-text"></p>
+            <hr>
+            <p class="mb-0"><strong>Email:</strong> ${msg.email}</p>
+            <p class="mb-0"><strong>Teléfono:</strong> ${msg.telefono}</p>
+            <a href="/editar_mensaje/?id=${msg.id}" class="btn btn-sm btn-outline-primary">Editar</a>
           </div>
         </div>
       `;
-      contenedor.insertAdjacentHTML("beforeend", tarjeta);
+
+      // Insertar el texto del usuario de forma segura con textContent para evitar XSS
+      col.querySelector('.card-title').textContent = msg.nombre_apellido;
+      col.querySelector('.card-text').textContent = msg.mensaje;
+
+      contenedor.appendChild(col);
     });
   } catch (error) {
     console.error(error);
