@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Registrar Mascota{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Registrar Nueva Mascota</h1>
+    <p class="lead">Llenando el formulario se añadirá la mascota al refugio: <strong>{{ refugio.nombre }}</strong>.</p>
+    
+    <div class="card shadow p-4">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="row">
+                {% for field in form %}
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <div class="alert alert-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="btn btn-success mt-4">Guardar Mascota</button>
+            <a href="{% url 'panel_refugio' %}" class="btn btn-secondary mt-4">Cancelar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

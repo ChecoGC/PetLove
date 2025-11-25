@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Gestion de Mascotas{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Gestion de Mascotas</h1>
+    
+    {% if refugio %}
+        <div class="alert alert-success" role="alert">
+            Bienvenido, {{ request.user.username }}!!! Estás gestionando el refugio {{ refugio.nombre }}.
+        </div>
+
+        <h2>Mis Mascotas en Adopción </h2>
+        <a href="{% url 'agregar_mascota' %}" class="btn btn-primary mb-3">
+            ➕ Registrar Nueva Mascota
+        </a>
+        
+        <div class="row">
+            {% for mascota in mascotas_propias %}
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow">
+                        {% if mascota.foto %}
+                            <img src="{{ mascota.foto.url }}" class="card-img-top pet-img" alt="{{ mascota.nombre }}">
+                        {% else %}
+                            <div class="pet-img bg-secondary d-flex align-items-center justify-content-center text-white">Sin Foto</div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ mascota.nombre }} ({{ mascota.tipo|capfirst }})</h5>
+                            <p class="card-text badge {% if mascota.status == 'disponible' %}bg-success{% elif mascota.status == 'en_proceso' %}bg-warning text-dark{% else %}bg-danger{% endif %}">{{ mascota.get_status_display }}</p>
+                            
+                            <p class="card-text"><small class="text-muted">Registro: {{ mascota.fecha_registro|date:"d M Y" }}</small></p>
+                            
+                            <a href="{% url 'editar_mascota' mascota.id %}" class="btn btn-sm btn-outline-secondary">Editar</a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <p class="alert alert-info">Aún no tienes mascotas registradas. ¡Empieza a subir algunas!</p>
+                </div>
+            {% endfor %}
+        </div>
+        
+    {% else %}
+        <div class="alert alert-danger" role="alert">
+            Tu cuenta de refugio está activa, pero no tienes un perfil de refugio asociado o este perfil no está vinculado a una entidad de Refugio. Por favor, contacta a un administrador.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

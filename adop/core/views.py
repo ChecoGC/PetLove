@@ -12,6 +12,7 @@ from .models import Mascota, Refugio
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from .forms import MascotaForm
 #Vista basada en una funcion
 # cargan los datos desde la api
 
@@ -155,3 +156,85 @@ def mis_mensajes_page(request):
 
 def editar_mensaje_page(request):
     return render(request, 'editar_mensaje.html')
+
+@login_required
+def panel_refugio(request):
+    """
+    Vista para el panel de administración del Refugio.
+    Solo accesible para usuarios que pertenecen al grupo 'refugio'.
+    """
+    #Revisar que el usuario pertenece al grupo refugio
+    if not request.user.is_refugio:
+        # Si no pertenece, redirigir a la página de inicio o mostrar un error
+        return redirect('inicio')
+    
+    # Obtener el refugio asociado al usuario
+    try:
+        perfil = request.user.perfil_refugio
+        refugio = perfil.refugio
+    except:
+        # Si el usuario es 'refugio' pero no tiene un PerfilRefugio asociado
+        refugio = None
+
+    # Obtener las mascotas que pertenecen a este refugio
+    mascotas_propias = Mascota.objects.none()
+    if refugio:
+        mascotas_propias = Mascota.objects.filter(refugio=refugio).order_by('-fecha_registro')
+
+    context = {
+        'refugio': refugio,
+        'mascotas_propias': mascotas_propias,
+        'conteo_mascotas': mascotas_propias.count(),
+        
+    }
+    
+    return render(request, 'panel_refugio.html', context)
+
+def _get_refugio_context(user):
+    """Función auxiliar para obtener el objeto Refugio del usuario."""
+    try:
+        return user.perfil_refugio.refugio
+    except (PerfilRefugio.DoesNotExist, AttributeError):
+        return None
+
+@login_required
+def agregar_mascota(request):
+    if not request.user.is_refugio:
+        return redirect('inicio')
+    
+    refugio = _get_refugio_context(request.user)
+    if not refugio:
+        # Manejar el caso donde el usuario 'refugio' no está vinculado a un Refugio
+        return redirect('panel_refugio') 
+
+    if request.method == 'POST':
+        form = MascotaForm(request.POST, request.FILES)
+        if form.is_valid():
+            mascota = form.save(commit=False)
+            mascota.refugio = refugio # Asigna automáticamente el refugio
+            mascota.save()
+            return redirect('panel_refugio')
+    else:
+        form = MascotaForm()
+        
+    return render(request, 'agregar_mascota.html', {'form': form, 'refugio': refugio})
+
+
+@login_required
+def editar_mascota(request, mascota_id):
+    if not request.user.is_refugio:
+        return redirect('inicio')
+
+    # Solo permite editar mascotas propias del refugio
+    refugio = _get_refugio_context(request.user)
+    mascota = get_object_or_404(Mascota, id=mascota_id, refugio=refugio)
+
+    if request.method == 'POST':
+        form = MascotaForm(request.POST, request.FILES, instance=mascota)
+        if form.is_valid():
+            form.save()
+            return redirect('panel_refugio')
+    else:
+        form = MascotaForm(instance=mascota)
+        
+    return render(request, 'editar_mascota.html', {'form': form, 'mascota': mascota})

@@ -26,4 +26,7 @@ urlpatterns = [
     path('mis-mensajes/', views.mis_mensajes_page, name='mis_mensajes_page'),
     path('editar_mensaje/', views.editar_mensaje_page, name='editar_mensaje_page'),
     path('', include(router.urls)),
+    path('refugio/panel/', views.panel_refugio, name='panel_refugio'),
+    path('refugio/mascotas/agregar/', views.agregar_mascota, name='agregar_mascota'),
+    path('refugio/mascotas/editar/<int:mascota_id>/', views.editar_mascota, name='editar_mascota'),
 ]
