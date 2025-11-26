@@ -8,12 +8,14 @@
     
     {% if refugio %}
         <div class="alert alert-success" role="alert">
-            Bienvenido, {{ request.user.username }}!!! Estás gestionando el refugio {{ refugio.nombre }}.
+            Bienvenid@, {{ request.user.username }}!!!
+            <br>
+            Estás gestionando el refugio {{ refugio.nombre }}.
         </div>
 
         <h2>Mis Mascotas en Adopción </h2>
         <a href="{% url 'agregar_mascota' %}" class="btn btn-primary mb-3">
-            ➕ Registrar Nueva Mascota
+            Agregar Mascota
         </a>
         
         <div class="row">
@@ -32,6 +34,15 @@
                             <p class="card-text"><small class="text-muted">Registro: {{ mascota.fecha_registro|date:"d M Y" }}</small></p>
                             
                             <a href="{% url 'editar_mascota' mascota.id %}" class="btn btn-sm btn-outline-secondary">Editar</a>
+
+                            <form method="post" action="{% url 'eliminar_mascota' mascota.id %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" 
+                                        class="btn btn-sm btn-danger"
+                                        onclick="return confirm('¿Estás seguro de que deseas eliminar a {{ mascota.nombre }}? Esta acción es irreversible.');">
+                                    Eliminar
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

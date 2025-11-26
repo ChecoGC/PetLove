@@ -1,15 +1,10 @@
 import requests
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Mascota, SolicitudAdopcion, Mensaje, Refugio
-
+from .models import Mascota, SolicitudAdopcion, Mensaje, Refugio, PerfilRefugio
 from rest_framework import viewsets, permissions
 from .serializers import MascotaSerializer, SolicitudAdopcionSerializer, MensajeSerializer, RefugioSerializer
-from .models import Mascota
-
 from django.template.loader import render_to_string
 from django.http import JsonResponse, HttpResponse
-from .models import Mascota, Refugio
-
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import MascotaForm
@@ -238,3 +233,29 @@ def editar_mascota(request, mascota_id):
         form = MascotaForm(instance=mascota)
         
     return render(request, 'editar_mascota.html', {'form': form, 'mascota': mascota})
+
+@login_required
+def eliminar_mascota(request, mascota_id):
+    """
+    Elimina una mascota, verificando que el usuario logueado sea el refugio propietario.
+    Solo acepta peticiones POST (por seguridad CSRF).
+    """
+    if not request.user.is_refugio:
+        return redirect('inicio')
+    
+    # 1. Obtener el refugio del usuario
+    refugio = _get_refugio_context(request.user)
+    if not refugio:
+        return redirect('panel_refugio')
+
+    # 2. Obtener la mascota y asegurar que pertenece a este refugio
+    # Si la mascota no existe o no pertenece a este refugio, Django devuelve 404
+    mascota = get_object_or_404(Mascota, id=mascota_id, refugio=refugio)
+
+    if request.method == 'POST':
+        mascota.delete()
+        # Opcional: Podrías usar el framework de mensajes de Django aquí para mostrar una notificación de éxito.
+        return redirect('panel_refugio')
+        
+    # Si la petición no es POST, redirigir al panel.
+    return redirect('panel_refugio')
