@@ -222,6 +222,22 @@
     </footer>
     
     <script>
+        function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+
         document.addEventListener("DOMContentLoaded", () => {
         const estadoSelect = document.getElementById("filter-estado");
         const municipioSelect = document.getElementById("filter-municipio");
@@ -295,20 +311,42 @@
             row.classList.add("row");
 
             mascotas.forEach(m => {
-                const card = document.createElement("div");
-                card.classList.add("col-md-4", "mb-4");
+                const col = document.createElement("div");
+                col.classList.add("col-md-4", "mb-4");
 
-                card.innerHTML = `
-                    <div class="card shadow">
-                        <img src="${m.foto}" class="card-img-top pet-img" alt="${m.nombre}">
-                        <div class="card-body">
-                            <h5 class="card-title">${m.nombre}</h5>
-                            <p class="card-text">${m.descripcion ? m.descripcion.substring(0, 100) : ""}</p>
-                            <a href="/mascota/${m.id}/" class="btn btn-primary">Ver Detalles</a>
-                        </div>
-                    </div>
-                `;
-                row.appendChild(card);
+                const card = document.createElement("div");
+                card.classList.add("card", "shadow");
+
+                const img = document.createElement("img");
+                img.src = m.foto;
+                img.className = "card-img-top pet-img";
+                img.alt = m.nombre; 
+
+                const cardBody = document.createElement("div");
+                cardBody.className = "card-body";
+
+                // PROTECCIÓN XSS 
+                const title = document.createElement("h5");
+                title.className = "card-title";
+                title.textContent = m.nombre;
+
+                const text = document.createElement("p");
+                text.className = "card-text";
+                const descripcion = m.descripcion ? m.descripcion : "";
+                text.textContent = descripcion.substring(0, 100) + (descripcion.length > 100 ? "..." : "");
+
+                const link = document.createElement("a");
+                link.href = `/mascota/${m.id}/`;
+                link.className = "btn btn-primary";
+                link.textContent = "Ver Detalles";
+
+                cardBody.appendChild(title);
+                cardBody.appendChild(text);
+                cardBody.appendChild(link);
+                card.appendChild(img);
+                card.appendChild(cardBody);
+                col.appendChild(card);
+                row.appendChild(col);
             });
 
             mascotaContainer.appendChild(row);

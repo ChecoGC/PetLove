@@ -65,11 +65,12 @@ form.addEventListener("submit", async (e) => {
   };
 
   try {
+    const csrftoken = getCookie('csrftoken');
     const response = await fetch(`/api/mensaje/${mensajeId}/`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+        "X-CSRFToken": csrftoken
       },
       body: JSON.stringify(data)
     });
@@ -91,12 +92,12 @@ form.addEventListener("submit", async (e) => {
 // Eliminar mensaje
 btnEliminar.addEventListener("click", async () => {
   if (!confirm("¿Seguro que deseas eliminar este mensaje?")) return;
-
+  const csrftoken = getCookie('csrftoken');
   try {
     const response = await fetch(`/api/mensaje/${mensajeId}/`, {
       method: "DELETE",
       headers: {
-        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+        "X-CSRFToken": csrftoken
       }
     });
 

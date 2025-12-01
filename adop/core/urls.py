@@ -27,7 +27,7 @@ urlpatterns = [
     path('editar_mensaje/', views.editar_mensaje_page, name='editar_mensaje_page'),
     path('', include(router.urls)),
     path('refugio/panel/', views.panel_refugio, name='panel_refugio'),
-    path('refugio/mascotas/agregar/', views.agregar_mascota, name='agregar_mascota'),
+    path('refugio/mascotas/agregar/', views.AgregarMascotaView.as_view(), name='agregar_mascota'),
     path('refugio/mascotas/editar/<int:mascota_id>/', views.editar_mascota, name='editar_mascota'),
     path('refugio/mascotas/eliminar/<int:mascota_id>/', views.eliminar_mascota, name='eliminar_mascota'),
 ]

@@ -42,6 +42,9 @@ const resultado = document.getElementById("resultado");
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
+  // Obtener el token con la funcion getCookie
+  const csrftoken = getCookie('csrftoken'); 
+
   const data = {
     nombre_apellido: form.nombre_apellido.value,
     telefono: form.telefono.value,
@@ -54,9 +57,10 @@ form.addEventListener("submit", async (e) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+        // Uso de la variable del token aquí
+        "X-CSRFToken": csrftoken 
       },
-      credentials: "same-origin",
+      mode: 'same-origin', 
       body: JSON.stringify(data)
     });
 

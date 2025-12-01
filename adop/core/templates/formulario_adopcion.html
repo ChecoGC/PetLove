@@ -273,6 +273,7 @@ const resultado = document.getElementById("resultado");
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
+  const csrftoken = getCookie('csrftoken');
 
   const data = {
     nombre_apellido: form.nombre_apellido.value,
@@ -314,13 +315,14 @@ form.addEventListener("submit", async (e) => {
     comentarios_extra: form.comentarios_extras.value,
     mascota: "{{ mascota.id }}"
   };
+  
 
   try {
     const response = await fetch("/api/formularios/", {  
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+        "X-CSRFToken": csrftoken 
       },
       body: JSON.stringify(data)
     });
