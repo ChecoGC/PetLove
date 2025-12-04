@@ -21,18 +21,8 @@ from .forms import MascotaForm
 # cargan los datos desde la api
 
 def index(request):
-    # template_name = "index.html"
-    # mascotas = Mascota.objects.all()
-    # context = {'mascotas': mascotas}
-    # return render(request, template_name)
-    api_url = request.build_absolute_uri('/api/mascotas/')
-    response = requests.get(api_url)
-
-    if response.status_code == 200:
-        mascotas = response.json()
-    else:
-        mascotas = []
-
+    mascotas = Mascota.objects.all() 
+    
     context = {'mascotas': mascotas}
     return render(request, 'index.html', context)
 

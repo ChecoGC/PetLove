@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -32,7 +32,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': '/home/jovannylg/django_debug.log',
+            'filename': BASE_DIR / 'django_debug.log',
         },
     },
     'loggers': {
@@ -110,8 +110,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'petlove',
-        'USER': 'jovannylg',
-        'PASSWORD': 'lupita123',
+        'USER': 'root',
+        'PASSWORD': 'guzman86',
         'HOST': 'localhost',  
         'PORT': '3306',
         'OPTIONS':{
@@ -164,9 +164,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 # MEDIA_URL = 'media/'
 
-# MEDIA_URL = '/media/'
-# MEDIA_ROOT = BASE_DIR / 'mascotas'
-MEDIA_ROOT = 'mascotas'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'mascotas'
+
 
 
 

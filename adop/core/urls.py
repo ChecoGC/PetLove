@@ -4,6 +4,8 @@ from . import views
 
 from rest_framework import routers
 from .views import MascotaViewSet , SolicitudAdopcionViewSet, MensajeViewSet, RefugioViewSet, MisMensajesViewSet
+from django.conf import settings
+from django.conf.urls.static import static
 
 router = routers.DefaultRouter()
 router.register(r'api/mascotas', MascotaViewSet)
@@ -31,3 +33,6 @@ urlpatterns = [
     path('refugio/mascotas/editar/<int:mascota_id>/', views.editar_mascota, name='editar_mascota'),
     path('refugio/mascotas/eliminar/<int:mascota_id>/', views.eliminar_mascota, name='eliminar_mascota'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
