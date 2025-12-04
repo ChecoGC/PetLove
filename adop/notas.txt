@@ -1,0 +1,21 @@
+instalar gunicorn
+uvicorn
+python -m pip pinstall -r requirements.txt
+python -m pip pip install gunicorn
+python -m pip pinstall -r requirements.txt
+python -m gunicorn adop.wsgi
+ifconfig
+sudo apt install net-tools
+python -m gunicorn --bind 192.31.78.100:800 
+ 
+instalar supervisor (tambien se podria usar systemctl)
+
+gunicorn.conf
+directory la raiz de el proyecto
+command = utilizar gunicorn de el .venv
+autostart = true
+autorestore = true
+los archivos log
+se define un grupo llamado gunicorn igual
+
+
