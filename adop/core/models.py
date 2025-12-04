@@ -62,7 +62,7 @@ class Mascota(models.Model):
         default='desconocido'
     )
     descripcion = models.TextField(blank=True)
-    foto = models.ImageField(upload_to='mascotas/', blank=True, null=True)
+    foto = models.ImageField(upload_to='media/mascotas/', blank=True, null=True)
     status = models.CharField(
         max_length=30,
         choices=STATUS_CHOICES,
