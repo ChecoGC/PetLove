@@ -164,9 +164,10 @@ USE_TZ = True
 STATIC_URL = 'static/'
 # MEDIA_URL = 'media/'
 
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = BASE_DIR / 'mascotas'
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'mascotas'
-
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 
