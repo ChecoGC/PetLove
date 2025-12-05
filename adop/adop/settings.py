@@ -22,8 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-3^z7pc53qbi=15#2c^kj*(-$6w927aamvl4h@29)n4^7yp642s'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 LOGGING = {
     'version': 1,
@@ -110,8 +109,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'petlove',
-        'USER': 'root',
-        'PASSWORD': 'guzman86',
+        'USER': 'jovannylg',
+        'PASSWORD': 'lupita123',
         'HOST': 'localhost',  
         'PORT': '3306',
         'OPTIONS':{
@@ -145,6 +144,10 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://nonsecretive-ima-abstemiously.ngrok-free.dev',
+]
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
@@ -161,8 +164,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
-# MEDIA_URL = 'media/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # MEDIA_URL = '/media/'
 # MEDIA_ROOT = BASE_DIR / 'mascotas'
