@@ -15,14 +15,12 @@ jobs:
           MYSQL_DATABASE: petlove
           MYSQL_USER: jovannylg
           MYSQL_PASSWORD: lupita123
-          MYSQL_ROOT_PASSWORD: root123
-        ports:
-          - 3306:3306
+          MYSQL_ROOT_PASSWORD: rootpassword
         options: >-
           --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=3
+          --health-retries=5
 
     strategy:
       max-parallel: 4
