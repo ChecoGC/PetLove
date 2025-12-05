@@ -10,17 +10,24 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mariadb:
-        image: mariadb:11
+        image: mariadb:10.6
         env:
+          MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: petlove
           MYSQL_USER: jovannylg
-          MYSQL_PASSWORD: lupita123
-          MYSQL_ROOT_PASSWORD: rootpassword
+          MYSQL_PASSWORD: password
+        ports:
+          - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping --silent"
+          --health-cmd="mysqladmin ping -h localhost -uroot -proot"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
+    env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: petlove
+          MYSQL_USER: jovannylg
+          MYSQL_PASSWORD: password
 
     strategy:
       max-parallel: 4

@@ -105,16 +105,31 @@ WSGI_APPLICATION = 'adop.wsgi.application'
 #'NAME': BASE_DIR / 'db.sqlite3',
         
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'petlove',
+#         'USER': 'jovannylg',
+#         'PASSWORD': 'lupita123',
+#         'HOST': 'localhost',  
+#         'PORT': '3306',
+#         'OPTIONS':{
+#             'init_command': "SET sql_mode ='STRICT_TRANS_TABLES'"
+#         }
+#     }
+# }
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'petlove',
-        'USER': 'jovannylg',
-        'PASSWORD': 'lupita123',
-        'HOST': 'localhost',  
-        'PORT': '3306',
-        'OPTIONS':{
-            'init_command': "SET sql_mode ='STRICT_TRANS_TABLES'"
+        'NAME': os.getenv('DB_NAME', 'petlove'),
+        'USER': os.getenv('DB_USER', 'jovannylg'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'lupita123'),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '3306'),
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
         }
     }
 }
@@ -183,3 +198,5 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
 X_FRAME_OPTIONS = 'DENY'
+
+
