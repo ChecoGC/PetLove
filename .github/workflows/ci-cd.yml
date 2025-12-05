@@ -9,7 +9,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     services:
-      mysql:
+      mariadb:
         image: mariadb:11
         env:
           MYSQL_DATABASE: petlove
