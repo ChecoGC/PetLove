@@ -32,19 +32,14 @@ jobs:
       DB_USER: jovannylg
       DB_PASSWORD: password
 
-    strategy:
-      max-parallel: 4
-      matrix:
-        python-version: [3.10.12]
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: '3.10'
 
       - name: Install dependencies
         run: |
@@ -52,6 +47,15 @@ jobs:
           source .venv/bin/activate
           pip install -U pip
           pip install -r adop/requirements.txt
+
+      - name: Wait for MariaDB
+        run: |
+          echo "Waiting for MariaDB..."
+          for i in {1..15}; do
+              nc -z mariadb 3306 && echo "MariaDB is up!" && break
+              echo "MariaDB not ready yet..."
+              sleep 2
+          done
 
       - name: Run migrations
         run: |
@@ -61,11 +65,9 @@ jobs:
       - name: Run tests
         run: |
           source .venv/bin/activate
-          # python adop/manage.py test
-
+          echo "Tests disabled por ahora"
 
   deploy:
-    # needs: test
     runs-on: self-hosted
 
     steps:
@@ -77,15 +79,15 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python3 -m venv ~/Documents/semestre/web/PetLove/adop/.venv
-          source ~/Documents/semestre/web/PetLove/adop/.venv/bin/activate
+          python3 -m venv .venv
+          source .venv/bin/activate
           pip install -U pip
           pip install -r adop/requirements.txt
           pip install gunicorn
 
       - name: Run migrations + collectstatic
         run: |
-          source ~/Documents/semestre/web/PetLove/adop/.venv/bin/activate
+          source .venv/bin/activate
           python adop/manage.py migrate
           python adop/manage.py collectstatic --noinput
 

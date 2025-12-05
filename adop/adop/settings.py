@@ -98,28 +98,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'adop.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-#'ENGINE': 'django.db.backends.sqlite3',
-#'NAME': BASE_DIR / 'db.sqlite3',
-        
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'petlove',
-#         'USER': 'jovannylg',
-#         'PASSWORD': 'lupita123',
-#         'HOST': 'localhost',  
-#         'PORT': '3306',
-#         'OPTIONS':{
-#             'init_command': "SET sql_mode ='STRICT_TRANS_TABLES'"
-#         }
-#     }
-# }
-
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -189,8 +167,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -200,3 +176,4 @@ CSRF_COOKIE_SECURE = True
 X_FRAME_OPTIONS = 'DENY'
 
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
