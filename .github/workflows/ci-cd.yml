@@ -8,6 +8,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
     services:
       mariadb:
         image: mariadb:10.6
@@ -23,11 +24,13 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
+
     env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: petlove
-          MYSQL_USER: jovannylg
-          MYSQL_PASSWORD: password
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_NAME: petlove
+      DB_USER: jovannylg
+      DB_PASSWORD: password
 
     strategy:
       max-parallel: 4
@@ -37,40 +40,33 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          ref: main
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
         run: |
-          python -m venv ~/Documents/semestre/web/PetLove/adop/.venv
-          source ~/Documents/semestre/web/PetLove/adop/.venv/bin/activate
-          pip install --upgrade pip
-          pip install -r ~/Documents/semestre/web/PetLove/adop/requirements.txt
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install -U pip
+          pip install -r adop/requirements.txt
 
       - name: Run migrations
         run: |
-          source ~/Documents/semestre/web/PetLove/adop/.venv/bin/activate
-          python ~/Documents/semestre/web/PetLove/adop/manage.py migrate
+          source .venv/bin/activate
+          python adop/manage.py migrate
 
       - name: Run tests
         run: |
-          source ~/Documents/semestre/web/PetLove/adop/.venv/bin/activate
-          # python ~/Documents/semestre/web/PetLove/adop/manage.py test
+          source .venv/bin/activate
+          # python adop/manage.py test
 
 
   deploy:
-    #needs: test  # Este trabajo solo se ejecuta si el trabajo 'test' pasa
+    # needs: test
     runs-on: self-hosted
-
-    strategy:
-      max-parallel: 4
-      #matrix:
-        #python-version: [3.10.12]
 
     steps:
       - name: Checkout main branch
@@ -79,31 +75,20 @@ jobs:
           ref: main
           clean: false
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install dependencies # Se instala gunicorn pero debiese estar dentro de requiriments.txt
+      - name: Install dependencies
         run: |
-          pwd
           python3 -m venv ~/Documents/semestre/web/PetLove/adop/.venv
           source ~/Documents/semestre/web/PetLove/adop/.venv/bin/activate
-          pip install --upgrade pip
-          pip install -r ~/Documents/semestre/web/PetLove/adop/requirements.txt
+          pip install -U pip
+          pip install -r adop/requirements.txt
           pip install gunicorn
 
-      - name: Run migrations
+      - name: Run migrations + collectstatic
         run: |
           source ~/Documents/semestre/web/PetLove/adop/.venv/bin/activate
-          python ~/Documents/semestre/web/PetLove/adop/manage.py migrate
-          python ~/Documents/semestre/web/PetLove/adop/manage.py collectstatic --noinput
+          python adop/manage.py migrate
+          python adop/manage.py collectstatic --noinput
 
-      # - name: Start Gunicorn
-      #   run: |
-      #     source venv/bin/activate
-      #     cd ./rumapp-park-back && gunicorn --bind 0.0.0.0:8000 rumapp_park_back.wsgi:application
-      - name: Reset gunicorn supervisor
+      - name: Restart gunicorn with supervisor
         run: |
           sudo supervisorctl restart all
-          #sudo service supervisor restart
